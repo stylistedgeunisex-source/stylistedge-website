@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stylist Edge Admin</title>
+
+<style>
+body { font-family: Arial; display: flex; height: 100vh; margin: 0; }
+
+.sidebar {
+  width: 260px;
+  background: #1e1e1e;
+  color: white;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.sidebar div {
+  padding: 8px;
+  cursor: pointer;
+}
+.sidebar div:hover { background: #333; }
+
+.main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+input, select {
+  padding: 6px;
+  margin: 4px;
+}
+
+button {
+  padding: 5px 8px;
+  margin: 4px;
+  cursor: pointer;
+}
+
+.block {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LEFT PANEL -->
+<div class="sidebar">
+  <h3>Categories</h3>
+  <div id="catList"></div>
+  <button onclick="addCategory()">+ Add</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <h2>Brand</h2>
+  <div class="block">
+    Name: <input id="brandName"><br>
+    Tagline: <input id="tagline"><br>
+    Contact: <input id="contact"><br>
+    Phone: <input id="phone"><br>
+    Address: <input id="address"><br>
+  </div>
+
+  <h2 id="catTitle">Select Category</h2>
+
+  <div id="catEditor" class="block" style="display:none;">
+    Title: <input id="catName"><br>
+    Image: <input id="catImage"><br>
+    Highlight: <input type="checkbox" id="catHighlight"><br>
+
+    <button onclick="moveCategory(-1)">↑</button>
+    <button onclick="moveCategory(1)">↓</button>
+    <button onclick="deleteCategory()">Delete</button>
+  </div>
+
+  <h3>Services</h3>
+  <div id="services"></div>
+  <button onclick="addService()">+ Add Service</button>
+
+  <hr>
+  <button onclick="downloadJSON()">Download JSON</button>
+
+</div>
+
+<script>
+let data = {};
+let current = null;
+
+// LOAD JSON
+fetch('database.json')
+.then(r => r.json())
+.then(json => {
+  data = json;
+  loadBrand();
+  renderCategories();
+});
+
+// BRAND LOAD
+function loadBrand() {
+  document.getElementById('brandName').value = data.brand.name;
+  document.getElementById('tagline').value = data.brand.tagline;
+  document.getElementById('contact').value = data.brand.contact.person;
+  document.getElementById('phone').value = data.brand.contact.phone;
+  document.getElementById('address').value = data.brand.contact.address;
+}
+
+// SAVE BRAND
+function saveBrand() {
+  data.brand.name = brandName.value;
+  data.brand.tagline = tagline.value;
+  data.brand.contact.person = contact.value;
+  data.brand.contact.phone = phone.value;
+  data.brand.contact.address = address.value;
+}
+
+// CATEGORY LIST
+function renderCategories() {
+  catList.innerHTML = "";
+  data.categories.forEach((c,i) => {
+    let row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'space-between';
+    row.style.padding = '6px 4px';
+
+    let title = document.createElement('div');
+    title.style.flex = '1';
+    title.style.cursor = 'pointer';
+    title.innerText = c.title;
+    title.onclick = () => selectCategory(i);
+
+    let controls = document.createElement('div');
+
+    let up = document.createElement('button');
+    up.textContent = '↑';
+    up.title = 'Move up';
+    up.onclick = (e) => { e.stopPropagation(); moveCategoryIndex(i, -1); };
+
+    let down = document.createElement('button');
+    down.textContent = '↓';
+    down.title = 'Move down';
+    down.onclick = (e) => { e.stopPropagation(); moveCategoryIndex(i, 1); };
+
+    let del = document.createElement('button');
+    del.textContent = '✕';
+    del.title = 'Delete category';
+    del.onclick = (e) => { e.stopPropagation(); deleteCategory(i); };
+
+    controls.appendChild(up);
+    controls.appendChild(down);
+    controls.appendChild(del);
+
+    row.appendChild(title);
+    row.appendChild(controls);
+    catList.appendChild(row);
+  });
+}
+
+// SELECT CATEGORY
+function selectCategory(i) {
+  current = i;
+  let c = data.categories[i];
+
+  catEditor.style.display = "block";
+  catTitle.innerText = c.title;
+
+  catName.value = c.title;
+  catImage.value = c.image;
+  catHighlight.checked = c.highlight;
+
+  renderServices();
+}
+
+// UPDATE CATEGORY LIVE
+catName.oninput = () => data.categories[current].title = catName.value;
+catImage.oninput = () => data.categories[current].image = catImage.value;
+catHighlight.onchange = () => data.categories[current].highlight = catHighlight.checked;
+
+// ADD CATEGORY
+function addCategory() {
+  data.categories.push({
+    id: "new",
+    title: "New Category",
+    image: "",
+    highlight: false,
+    services: []
+  });
+  renderCategories();
+}
+
+// DELETE CATEGORY
+function deleteCategory(index) {
+  if (index === undefined) index = current;
+  data.categories.splice(index,1);
+  if (current === index) {
+    current = null;
+    services.innerHTML = "";
+    catEditor.style.display = 'none';
+    catTitle.innerText = 'Select Category';
+  } else if (current > index) {
+    current = current - 1;
+  }
+  renderCategories();
+}
+
+// MOVE CATEGORY
+function moveCategory(dir) {
+  let i = current;
+  let j = i + dir;
+  if (j < 0 || j >= data.categories.length) return;
+  [data.categories[i], data.categories[j]] = [data.categories[j], data.categories[i]];
+  current = j;
+  renderCategories();
+}
+
+function moveCategoryIndex(i, dir) {
+  let j = i + dir;
+  if (j < 0 || j >= data.categories.length) return;
+  [data.categories[i], data.categories[j]] = [data.categories[j], data.categories[i]];
+  if (current === i) current = j;
+  else if (current === j) current = i;
+  renderCategories();
+}
+
+// SERVICES
+function renderServices() {
+  services.innerHTML = "";
+  let list = data.categories[current].services;
+
+  list.forEach((s,i) => {
+    let div = document.createElement('div');
+    div.className = "block";
+
+    div.innerHTML = `
+      Name: <input value="${s.name}" onchange="upd(${i},'name',this.value)">
+      <br>
+
+      Type:
+      <select onchange="changeType(${i}, this.value)">
+        <option ${s.priceType=='fixed'?'selected':''}>fixed</option>
+        <option ${s.priceType=='range'?'selected':''}>range</option>
+        <option ${s.priceType=='gender'?'selected':''}>gender</option>
+        <option ${s.priceType=='custom'?'selected':''}>custom</option>
+      </select>
+
+      <div>${priceUI(s,i)}</div>
+
+      <button onclick="moveService(${i},-1)">↑</button>
+      <button onclick="moveService(${i},1)">↓</button>
+      <button onclick="delService(${i})">Delete</button>
+    `;
+    services.appendChild(div);
+  });
+}
+
+// PRICE UI
+function priceUI(s,i) {
+  if (s.priceType=='fixed')
+    return `<input value="${s.price||''}" onchange="upd(${i},'price',this.value)">`;
+
+  if (s.priceType=='range')
+    return `
+      <input value="${s.price?.[0]||''}" onchange="updRange(${i},0,this.value)">
+      <input value="${s.price?.[1]||''}" onchange="updRange(${i},1,this.value)">
+    `;
+
+  if (s.priceType=='gender')
+    return `
+      <input placeholder="male" value="${s.price?.male||''}" onchange="updGender(${i},'male',this.value)">
+      <input placeholder="female" value="${s.price?.female||''}" onchange="updGender(${i},'female',this.value)">
+    `;
+
+  return "Consultation";
+}
+
+// UPDATE SERVICE
+function upd(i,k,v){ data.categories[current].services[i][k]=v; }
+
+// TYPE CHANGE
+function changeType(i,t){
+  let s=data.categories[current].services[i];
+  s.priceType=t;
+
+  if(t=='fixed') s.price=0;
+  if(t=='range') s.price=[0,0];
+  if(t=='gender') s.price={male:0,female:0};
+  if(t=='custom') s.price=null;
+
+  renderServices();
+}
+
+// RANGE UPDATE
+function updRange(i,j,v){
+  data.categories[current].services[i].price[j]=Number(v);
+}
+
+// GENDER UPDATE
+function updGender(i,k,v){
+  data.categories[current].services[i].price[k]=Number(v);
+}
+
+// DELETE SERVICE
+function delService(i){
+  data.categories[current].services.splice(i,1);
+  renderServices();
+}
+
+// ADD SERVICE
+function addService(){
+  data.categories[current].services.push({
+    name:"New Service",
+    price:0,
+    priceType:"fixed"
+  });
+  renderServices();
+}
+
+// MOVE SERVICE
+function moveService(i,dir){
+  let list=data.categories[current].services;
+  let j=i+dir;
+  if(j<0||j>=list.length) return;
+  [list[i],list[j]]=[list[j],list[i]];
+  renderServices();
+}
+
+// DOWNLOAD JSON
+function downloadJSON(){
+  saveBrand();
+  const blob=new Blob([JSON.stringify(data,null,2)]);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download="database.json";
+  a.click();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+{
+  "brand": {
+    "name": "Stylist Edge Salon",
+    "tagline": "Style that speaks confidence",
+    "contact": {
+      "person": "E. Ranjitha",
+      "phone": "7810076472",
+      "address": "Near Anand Theater, Pidamaneri, Dharmapuri"
+    }
+  },
+  "categories": [
+    {
+      "id": "threading",
+      "title": "Threading & Precision Hair Removal",
+      "image": "assets/threading.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Eyebrow", "price": 50, "priceType": "fixed" },
+        { "name": "Upper Lip", "price": 30, "priceType": "fixed" },
+        { "name": "Chin", "price": 30, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "waxing",
+      "title": "Waxing & Body Hair Removal",
+      "image": "assets/waxing.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Full Arms / Full Legs", "price": 800, "priceType": "fixed" },
+        { "name": "Half Arms / Half Legs", "price": 400, "priceType": "fixed" },
+        { "name": "Underarm", "price": 100, "priceType": "fixed" },
+        { "name": "Chin", "price": 80, "priceType": "fixed" },
+        { "name": "Forehead", "price": 200, "priceType": "fixed" },
+        { "name": "Full Body", "price": 1500, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "manicure",
+      "title": "Manicure & Pedicure",
+      "image": "assets/manicure.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Classic Manicure / Pedicure", "price": 700, "priceType": "fixed" },
+        { "name": "Shea Butter Manicure / Pedicure", "price": 800, "priceType": "fixed" },
+        { "name": "Paraffin Manicure / Pedicure", "price": 900, "priceType": "fixed" },
+        { "name": "Organic Spa Manicure / Pedicure", "price": 950, "priceType": "fixed" },
+        { "name": "Crystal Pedicure / Manicure", "price": 1000, "priceType": "fixed" },
+        { "name": "Heel Peel Treatment", "price": 1500, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "cleanup",
+      "title": "Basic Skin Care & Cleanups",
+      "image": "assets/cleanup.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Classic Cleanup", "price": 300, "priceType": "fixed" },
+        { "name": "Bleach (Face / Neck)", "price": 400, "priceType": "fixed" },
+        { "name": "Bleach (Hands / Legs)", "price": 500, "priceType": "fixed" },
+        { "name": "D-Tan (Face / Neck)", "price": 500, "priceType": "fixed" },
+        { "name": "D-Tan (Hands / Legs)", "price": 600, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "facials",
+      "title": "Advanced Facial Treatments",
+      "image": "assets/facials.jpg",
+      "highlight": true,
+      "services": [
+        { "name": "Classic Facial", "price": 600, "priceType": "fixed" },
+        { "name": "Aromatherapy Facial", "price": 800, "priceType": "fixed" },
+        { "name": "Fruit Facial", "price": 900, "priceType": "fixed" },
+        { "name": "D-Tan Facial", "price": 1000, "priceType": "fixed" },
+        { "name": "Gold Facial", "price": 1200, "priceType": "fixed" },
+        { "name": "Anti Blemish Facial", "price": 1300, "priceType": "fixed" },
+        { "name": "Sensi Glow Facial", "price": 1400, "priceType": "fixed" },
+        { "name": "Fairness Facial", "price": 1500, "priceType": "fixed" },
+        { "name": "Skin Whitening Facial", "price": 2000, "priceType": "fixed" },
+        { "name": "Herbs Facial", "price": 2200, "priceType": "fixed" },
+        { "name": "Bridal Facial", "price": 2200, "priceType": "fixed" },
+        { "name": "Hydra Facial", "price": 2000, "priceType": "fixed" },
+        { "name": "Carbon Laser Facial", "price": 2000, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "spa",
+      "title": "Spa & Body Therapies",
+      "image": "assets/spa.jpg",
+      "highlight": true,
+      "services": [
+        { "name": "Coco Butter Massage (60 min)", "price": 2000, "priceType": "fixed" },
+        { "name": "Aroma Oil Massage (60 min)", "price": 2000, "priceType": "fixed" },
+        { "name": "Body Polish", "price": 2200, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "reflexology",
+      "title": "Reflexology & Relaxation",
+      "image": "assets/reflexology.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Hand / Feet Reflexology (20 min)", "price": 400, "priceType": "fixed" },
+        { "name": "Back & Neck Therapy (20 min)", "price": 450, "priceType": "fixed" }
+      ]
+    },
+    {
+      "id": "haircare",
+      "title": "Hair Care & Scalp Treatments",
+      "image": "assets/haircare.jpg",
+      "highlight": true,
+      "services": [
+        {
+          "name": "Head Massage (with oil)",
+          "price": { "male": 300, "female": 500 },
+          "priceType": "gender"
+        },
+        {
+          "name": "Moisturizing Hair Spa",
+          "price": [800, 1500],
+          "priceType": "range"
+        },
+        {
+          "name": "Frizzy Hair Treatment",
+          "price": [800, 1500],
+          "priceType": "range"
+        },
+        {
+          "name": "Hair Repair Treatment",
+          "price": [1000, 1500],
+          "priceType": "range"
+        },
+        {
+          "name": "Spa Keratin",
+          "price": [1500, 1800],
+          "priceType": "range"
+        }
+      ]
+    },
+    {
+      "id": "hairchemical",
+      "title": "Hair Styling & Chemical Treatments",
+      "image": "assets/hairchem.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Hair Coloring", "price": null, "priceType": "custom" },
+        { "name": "Keratin Treatment", "price": null, "priceType": "custom" },
+        { "name": "Smoothening Treatment", "price": null, "priceType": "custom" }
+      ]
+    },
+    {
+      "id": "clinical",
+      "title": "Skin & Clinical Treatments",
+      "image": "assets/clinical.jpg",
+      "highlight": false,
+      "services": [
+        { "name": "Acne Treatment", "price": null, "priceType": "custom" },
+        { "name": "Dandruff Treatment", "price": null, "priceType": "custom" },
+        { "name": "Chemical Peels", "price": null, "priceType": "custom" },
+        { "name": "Permanent Hair Removal", "price": null, "priceType": "custom" },
+        { "name": "Tattoo Removal", "price": null, "priceType": "custom" }
+      ]
+    },
+    {
+      "id": "bridal",
+      "title": "Bridal & Occasion Services",
+      "image": "assets/bridal.jpg",
+      "highlight": true,
+      "services": [
+        { "name": "Bridal Makeup", "price": null, "priceType": "custom" }
+      ]
+    }
+  ]
+}

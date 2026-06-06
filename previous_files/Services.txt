@@ -1,0 +1,98 @@
+Name - Stylist Edge Salon 
+tagline - Style that speaks confidence
+
+Contact: 
+E.Ranjitha
+7810076472
+
+Locaiton:
+& Near Anand Theater
+Pidamaneri, Dharmapuri
+
+Services: 
+
+1. Threading & Precision Hair Removal
+Eyebrow — ₹50
+Upper Lip — ₹30
+Chin — ₹30
+
+2. Waxing & Body Hair Removal
+Full Arms / Full Legs — ₹800
+Half Arms / Half Legs — ₹400
+Underarm — ₹100
+Chin — ₹80
+Forehead — ₹200
+Full Body — ₹1500
+
+3. Manicure & Pedicure (Nail Care)
+Classic Manicure / Pedicure — ₹700
+Shea Butter Manicure / Pedicure — ₹800
+Paraffin Manicure / Pedicure — ₹900
+Organic Spa Manicure / Pedicure — ₹950
+Crystal Pedicure / Manicure — ₹1000
+Heel Peel Treatment — ₹1500
+
+4. Basic Skin Care & Cleanups
+Classic Cleanup — ₹300
+Bleach (Face / Neck) — ₹400
+Bleach (Hands / Legs) — ₹500
+D-Tan (Face / Neck) — ₹500
+D-Tan (Hands / Legs) — ₹600
+
+5. Advanced Facial Treatments
+Classic Facial — ₹600
+Aromatherapy Facial — ₹800
+Fruit Facial — ₹900
+D-Tan Facial — ₹1000
+Gold Facial — ₹1200
+Anti Blemish Facial — ₹1300
+Sensi Glow Facial — ₹1400
+Fairness Facial — ₹1500
+Skin Whitening Facial — ₹2000
+Herbs Facial — ₹2200
+Bridal Facial — ₹2200
+Hydra Facial — ₹2000
+Carbon Laser Facial — ₹2000
+
+6. Spa & Body Therapies
+Coco Butter Massage (60 min) — ₹2000
+Aroma Oil Massage (60 min) — ₹2000
+Body Polish — ₹2200
+
+7. Reflexology & Relaxation
+Hand / Feet Reflexology (20 min) — ₹400
+Back & Neck Therapy (20 min) — ₹450
+
+8. Hair Care & Scalp Treatments
+Head Massage (with oil) - Male — ₹300 ; Female — ₹500
+Hair Spa (depends on hair length)
+	Moisturizing Hair Spa — ₹800–₹1500
+	Frizzy Hair Treatment — ₹800–₹1500
+	Hair Repair Treatment — ₹1000–₹1500
+	Spa Keratin — ₹1500–₹1800
+
+9. Hair Styling & Chemical Treatments 
+(Prices not specified in assets — keep as “consultation based” on website)
+Hair Coloring
+Keratin Treatment
+Smoothening Treatment
+
+10. Skin & Clinical Treatments
+(Consultation / custom pricing)
+Acne Treatment
+Dandruff Treatment
+Chemical Peels
+Permanent Hair Removal
+Tattoo Removal
+
+11. Bridal & Occasion Services
+(Custom packages)
+Bridal Makeup
+
+12. Signature / Highlight Services (for UI emphasis)
+Hydra Facial — ₹2000
+Carbon Laser Facial — ₹2000
+Body Polish — ₹2200
+Aroma Oil Massage — ₹2000
+Hair Spa — ₹800–₹1800
+Bridal Facial — ₹2200
