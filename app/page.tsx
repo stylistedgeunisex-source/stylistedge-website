@@ -31,6 +31,7 @@ interface Contact {
 interface Brand {
   name: string;
   tagline: string;
+  heroImage?: string;
   contact: Contact;
 }
 
@@ -155,7 +156,7 @@ export default function HomePage() {
   // Fetch the data-driven database
   useEffect(() => {
     let active = true;
-    fetch('/database.json')
+    fetch('/database.json?v=' + Date.now())
       .then((res) => res.json())
       .then((data) => {
         if (!active) return;
@@ -338,7 +339,7 @@ export default function HomePage() {
         {/* Luxury Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&q=80&w=1600"
+            src={db.brand.heroImage || "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&q=80&w=1600"}
             alt="Luxury Salon Interior"
             className="w-full h-full object-cover scale-105 animate-[subtle-zoom_20s_infinite_alternate] brightness-[0.7] contrast-[1.05]"
           />

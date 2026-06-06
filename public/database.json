@@ -6,7 +6,8 @@
       "person": "E. Ranjitha",
       "phone": "7810076472",
       "address": "Near Anand Theater, Pidamaneri, Dharmapuri"
-    }
+    },
+    "heroImage": "https://res.cloudinary.com/conferences-and-exhibitions-pvt-ltd/image/upload/v1718614461/Salon-Management/2024/May/Apple-Unisex-Salon/APPLE_SALON_KHAR-19_tmhets.jpg"
   },
   "categories": [
     {
@@ -15,9 +16,21 @@
       "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
-        { "name": "Eyebrow", "price": 50, "priceType": "fixed" },
-        { "name": "Upper Lip", "price": 30, "priceType": "fixed" },
-        { "name": "Chin", "price": 30, "priceType": "fixed" }
+        {
+          "name": "Eyebrow",
+          "price": 50,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Upper Lip",
+          "price": 30,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Chin",
+          "price": 30,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -26,12 +39,36 @@
       "image": "https://images.unsplash.com/photo-1596178060671-7a80dc8059ea?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
-        { "name": "Full Arms / Full Legs", "price": 800, "priceType": "fixed" },
-        { "name": "Half Arms / Half Legs", "price": 400, "priceType": "fixed" },
-        { "name": "Underarm", "price": 100, "priceType": "fixed" },
-        { "name": "Chin", "price": 80, "priceType": "fixed" },
-        { "name": "Forehead", "price": 200, "priceType": "fixed" },
-        { "name": "Full Body", "price": 1500, "priceType": "fixed" }
+        {
+          "name": "Full Arms / Full Legs",
+          "price": 800,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Half Arms / Half Legs",
+          "price": 400,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Underarm",
+          "price": 100,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Chin",
+          "price": 80,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Forehead",
+          "price": 200,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Full Body",
+          "price": 1500,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -40,12 +77,36 @@
       "image": "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
-        { "name": "Classic Manicure / Pedicure", "price": 700, "priceType": "fixed" },
-        { "name": "Shea Butter Manicure / Pedicure", "price": 800, "priceType": "fixed" },
-        { "name": "Paraffin Manicure / Pedicure", "price": 900, "priceType": "fixed" },
-        { "name": "Organic Spa Manicure / Pedicure", "price": 950, "priceType": "fixed" },
-        { "name": "Crystal Pedicure / Manicure", "price": 1000, "priceType": "fixed" },
-        { "name": "Heel Peel Treatment", "price": 1500, "priceType": "fixed" }
+        {
+          "name": "Classic Manicure / Pedicure",
+          "price": 700,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Shea Butter Manicure / Pedicure",
+          "price": 800,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Paraffin Manicure / Pedicure",
+          "price": 900,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Organic Spa Manicure / Pedicure",
+          "price": 950,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Crystal Pedicure / Manicure",
+          "price": 1000,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Heel Peel Treatment",
+          "price": 1500,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -54,11 +115,31 @@
       "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
-        { "name": "Classic Cleanup", "price": 300, "priceType": "fixed" },
-        { "name": "Bleach (Face / Neck)", "price": 400, "priceType": "fixed" },
-        { "name": "Bleach (Hands / Legs)", "price": 500, "priceType": "fixed" },
-        { "name": "D-Tan (Face / Neck)", "price": 500, "priceType": "fixed" },
-        { "name": "D-Tan (Hands / Legs)", "price": 600, "priceType": "fixed" }
+        {
+          "name": "Classic Cleanup",
+          "price": 300,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Bleach (Face / Neck)",
+          "price": 400,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Bleach (Hands / Legs)",
+          "price": 500,
+          "priceType": "fixed"
+        },
+        {
+          "name": "D-Tan (Face / Neck)",
+          "price": 500,
+          "priceType": "fixed"
+        },
+        {
+          "name": "D-Tan (Hands / Legs)",
+          "price": 600,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -67,19 +148,71 @@
       "image": "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
-        { "name": "Classic Facial", "price": 600, "priceType": "fixed" },
-        { "name": "Aromatherapy Facial", "price": 800, "priceType": "fixed" },
-        { "name": "Fruit Facial", "price": 900, "priceType": "fixed" },
-        { "name": "D-Tan Facial", "price": 1000, "priceType": "fixed" },
-        { "name": "Gold Facial", "price": 1200, "priceType": "fixed" },
-        { "name": "Anti Blemish Facial", "price": 1300, "priceType": "fixed" },
-        { "name": "Sensi Glow Facial", "price": 1400, "priceType": "fixed" },
-        { "name": "Fairness Facial", "price": 1500, "priceType": "fixed" },
-        { "name": "Skin Whitening Facial", "price": 2000, "priceType": "fixed" },
-        { "name": "Herbs Facial", "price": 2200, "priceType": "fixed" },
-        { "name": "Bridal Facial", "price": 2200, "priceType": "fixed" },
-        { "name": "Hydra Facial", "price": 2000, "priceType": "fixed" },
-        { "name": "Carbon Laser Facial", "price": 2000, "priceType": "fixed" }
+        {
+          "name": "Classic Facial",
+          "price": 600,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Aromatherapy Facial",
+          "price": 800,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Fruit Facial",
+          "price": 900,
+          "priceType": "fixed"
+        },
+        {
+          "name": "D-Tan Facial",
+          "price": 1000,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Gold Facial",
+          "price": 1200,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Anti Blemish Facial",
+          "price": 1300,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Sensi Glow Facial",
+          "price": 1400,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Fairness Facial",
+          "price": 1500,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Skin Whitening Facial",
+          "price": 2000,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Herbs Facial",
+          "price": 2200,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Bridal Facial",
+          "price": 2200,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Hydra Facial",
+          "price": 2000,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Carbon Laser Facial",
+          "price": 2000,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -88,9 +221,21 @@
       "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
-        { "name": "Coco Butter Massage (60 min)", "price": 2000, "priceType": "fixed" },
-        { "name": "Aroma Oil Massage (60 min)", "price": 2000, "priceType": "fixed" },
-        { "name": "Body Polish", "price": 2200, "priceType": "fixed" }
+        {
+          "name": "Coco Butter Massage (60 min)",
+          "price": 2000,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Aroma Oil Massage (60 min)",
+          "price": 2000,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Body Polish",
+          "price": 2200,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -99,8 +244,16 @@
       "image": "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
-        { "name": "Hand / Feet Reflexology (20 min)", "price": 400, "priceType": "fixed" },
-        { "name": "Back & Neck Therapy (20 min)", "price": 450, "priceType": "fixed" }
+        {
+          "name": "Hand / Feet Reflexology (20 min)",
+          "price": 400,
+          "priceType": "fixed"
+        },
+        {
+          "name": "Back & Neck Therapy (20 min)",
+          "price": 450,
+          "priceType": "fixed"
+        }
       ]
     },
     {
@@ -111,27 +264,42 @@
       "services": [
         {
           "name": "Head Massage (with oil)",
-          "price": { "male": 300, "female": 500 },
+          "price": {
+            "male": 300,
+            "female": 500
+          },
           "priceType": "gender"
         },
         {
           "name": "Moisturizing Hair Spa",
-          "price": [800, 1500],
+          "price": [
+            800,
+            1500
+          ],
           "priceType": "range"
         },
         {
           "name": "Frizzy Hair Treatment",
-          "price": [800, 1500],
+          "price": [
+            800,
+            1500
+          ],
           "priceType": "range"
         },
         {
           "name": "Hair Repair Treatment",
-          "price": [1000, 1500],
+          "price": [
+            1000,
+            1500
+          ],
           "priceType": "range"
         },
         {
           "name": "Spa Keratin",
-          "price": [1500, 1800],
+          "price": [
+            1500,
+            1800
+          ],
           "priceType": "range"
         }
       ]
@@ -142,9 +310,21 @@
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvnM10ZtYaQS-3_MhoPrsMzNYiktwMqiomUg&s",
       "highlight": false,
       "services": [
-        { "name": "Hair Coloring", "price": null, "priceType": "custom" },
-        { "name": "Keratin Treatment", "price": null, "priceType": "custom" },
-        { "name": "Smoothening Treatment", "price": null, "priceType": "custom" }
+        {
+          "name": "Hair Coloring",
+          "price": null,
+          "priceType": "custom"
+        },
+        {
+          "name": "Keratin Treatment",
+          "price": null,
+          "priceType": "custom"
+        },
+        {
+          "name": "Smoothening Treatment",
+          "price": null,
+          "priceType": "custom"
+        }
       ]
     },
     {
@@ -153,11 +333,31 @@
       "image": "https://cdn.shopify.com/s/files/1/0717/7869/7519/files/woman-washing-head-hairsalon_0456c1c4-24c2-4fdf-b27e-7f59f28de02e_600x600.jpg?v=1732168038",
       "highlight": false,
       "services": [
-        { "name": "Acne Treatment", "price": null, "priceType": "custom" },
-        { "name": "Dandruff Treatment", "price": null, "priceType": "custom" },
-        { "name": "Chemical Peels", "price": null, "priceType": "custom" },
-        { "name": "Permanent Hair Removal", "price": null, "priceType": "custom" },
-        { "name": "Tattoo Removal", "price": null, "priceType": "custom" }
+        {
+          "name": "Acne Treatment",
+          "price": null,
+          "priceType": "custom"
+        },
+        {
+          "name": "Dandruff Treatment",
+          "price": null,
+          "priceType": "custom"
+        },
+        {
+          "name": "Chemical Peels",
+          "price": null,
+          "priceType": "custom"
+        },
+        {
+          "name": "Permanent Hair Removal",
+          "price": null,
+          "priceType": "custom"
+        },
+        {
+          "name": "Tattoo Removal",
+          "price": null,
+          "priceType": "custom"
+        }
       ]
     },
     {
@@ -166,7 +366,11 @@
       "image": "https://images.unsplash.com/photo-1484863137850-59afcfe05386?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
-        { "name": "Bridal Makeup", "price": null, "priceType": "custom" }
+        {
+          "name": "Bridal Makeup",
+          "price": null,
+          "priceType": "custom"
+        }
       ]
     }
   ]

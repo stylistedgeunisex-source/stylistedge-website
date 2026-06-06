@@ -32,6 +32,7 @@ interface Contact {
 interface Brand {
   name: string;
   tagline: string;
+  heroImage?: string;
   contact: Contact;
 }
 
@@ -44,6 +45,7 @@ const emptyDatabase: Database = {
   brand: {
     name: '',
     tagline: '',
+    heroImage: '',
     contact: {
       person: '',
       phone: '',
@@ -79,16 +81,42 @@ export default function AdminPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const saveDatabaseToServer = async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(database, omitInternalKeys, 2)
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      alert('Settings saved successfully!');
+    } catch (error) {
+      console.error('Failed to save', error);
+      alert('Failed to save settings.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   useEffect(() => {
     let active = true;
 
-    fetch('/database.json')
+    fetch('/database.json?v=' + Date.now())
       .then((response) => response.json())
       .then((json: Database) => {
         if (!active) return;
         setDatabase({
-          brand: json.brand,
+          brand: {
+            ...json.brand,
+            heroImage: json.brand.heroImage || "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&q=80&w=1600"
+          },
           categories: ensureServiceIds(json.categories)
         });
         setIsLoaded(true);
@@ -105,10 +133,10 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (!selectedCategoryId && database.categories.length > 0) {
-      setSelectedCategoryId(database.categories[0].id);
+    if (!selectedCategoryId) {
+      setSelectedCategoryId('brand');
     }
-  }, [database.categories, selectedCategoryId]);
+  }, [selectedCategoryId]);
 
   const selectedCategoryIndex = useMemo(
     () => database.categories.findIndex((category) => category.id === selectedCategoryId),
@@ -411,7 +439,15 @@ const renderPriceInputs = (service: Service) => {
             Admin Panel
           </div>
         </div>
-        <div className="sectionHeader">Categories</div>
+        <div className="categoryList">
+          <div
+            className={`categoryItem ${selectedCategoryId === 'brand' ? 'selected' : ''}`}
+            onClick={() => selectCategory('brand')}
+          >
+            <div className="categoryLabel">Brand Settings</div>
+          </div>
+        </div>
+        <div className="sectionHeader" style={{ marginTop: '16px' }}>Categories</div>
         <div className="categoryList">
           {database.categories.map((category) => {
             const isSelected = category.id === selectedCategoryId;
@@ -443,50 +479,73 @@ const renderPriceInputs = (service: Service) => {
       </div>
 
       <div className="mainPanel">
-        <div className="sectionBlock">
-          <div className="sectionHeader">Brand</div>
-          <div className="fieldRow">
-            <label>Name</label>
-            <input
-              type="text"
-              value={database.brand.name}
-              onChange={(event) => updateBrandField('name', event.target.value)}
-            />
-          </div>
-          <div className="fieldRow">
-            <label>Tagline</label>
-            <input
-              type="text"
-              value={database.brand.tagline}
-              onChange={(event) => updateBrandField('tagline', event.target.value)}
-            />
-          </div>
-          <div className="fieldRow">
-            <label>Contact</label>
-            <input
-              type="text"
-              value={database.brand.contact.person}
-              onChange={(event) => updateContactField('person', event.target.value)}
-            />
-          </div>
-          <div className="fieldRow">
-            <label>Phone</label>
-            <input
-              type="text"
-              value={database.brand.contact.phone}
-              onChange={(event) => updateContactField('phone', event.target.value)}
-            />
-          </div>
-          <div className="fieldRow">
-            <label>Address</label>
-            <input
-              type="text"
-              value={database.brand.contact.address}
-              onChange={(event) => updateContactField('address', event.target.value)}
-            />
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <button
+            className="primaryButton"
+            style={{ backgroundColor: isSaving ? '#9ca3af' : '#10b981', minWidth: '150px' }}
+            type="button"
+            onClick={saveDatabaseToServer}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </button>
         </div>
 
+        {selectedCategoryId === 'brand' && (
+          <div className="sectionBlock">
+            <div className="sectionHeader">Brand</div>
+            <div className="fieldRow">
+              <label>Hero Image URL</label>
+              <input
+                type="text"
+                value={database.brand.heroImage || ''}
+                onChange={(event) => updateBrandField('heroImage', event.target.value)}
+              />
+            </div>
+            <div className="fieldRow">
+              <label>Name</label>
+              <input
+                type="text"
+                value={database.brand.name}
+                onChange={(event) => updateBrandField('name', event.target.value)}
+              />
+            </div>
+            <div className="fieldRow">
+              <label>Tagline</label>
+              <input
+                type="text"
+                value={database.brand.tagline}
+                onChange={(event) => updateBrandField('tagline', event.target.value)}
+              />
+            </div>
+            <div className="fieldRow">
+              <label>Contact</label>
+              <input
+                type="text"
+                value={database.brand.contact.person}
+                onChange={(event) => updateContactField('person', event.target.value)}
+              />
+            </div>
+            <div className="fieldRow">
+              <label>Phone</label>
+              <input
+                type="text"
+                value={database.brand.contact.phone}
+                onChange={(event) => updateContactField('phone', event.target.value)}
+              />
+            </div>
+            <div className="fieldRow">
+              <label>Address</label>
+              <input
+                type="text"
+                value={database.brand.contact.address}
+                onChange={(event) => updateContactField('address', event.target.value)}
+              />
+            </div>
+          </div>
+        )}
+
+        {selectedCategoryId !== 'brand' && (
         <div className="sectionBlock">
           <div className="sectionHeader">
             {selectedCategory ? selectedCategory.title : 'Select a Category'}
@@ -579,6 +638,7 @@ const renderPriceInputs = (service: Service) => {
             <div className="emptyState">Choose a category from the sidebar to edit the services.</div>
           )}
         </div>
+        )}
 
         <div className="sectionBlock">
           <button className="primaryButton" type="button" onClick={downloadJSON}>
