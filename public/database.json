@@ -139,7 +139,7 @@
     {
       "id": "hairchemical",
       "title": "Hair Styling & Chemical Treatments",
-      "image": "https://images.unsplash.com/photo-1595893436099-e9274272d5f8?auto=format&fit=crop&q=80&w=800",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvnM10ZtYaQS-3_MhoPrsMzNYiktwMqiomUg&s",
       "highlight": false,
       "services": [
         { "name": "Hair Coloring", "price": null, "priceType": "custom" },
@@ -150,7 +150,7 @@
     {
       "id": "clinical",
       "title": "Skin & Clinical Treatments",
-      "image": "https://images.unsplash.com/photo-1620331702289-448a6ebc7856?auto=format&fit=crop&q=80&w=800",
+      "image": "https://cdn.shopify.com/s/files/1/0717/7869/7519/files/woman-washing-head-hairsalon_0456c1c4-24c2-4fdf-b27e-7f59f28de02e_600x600.jpg?v=1732168038",
       "highlight": false,
       "services": [
         { "name": "Acne Treatment", "price": null, "priceType": "custom" },

@@ -229,8 +229,13 @@ export default function HomePage() {
   // Skeleton Loader for premium loading experience
   if (!db) {
     return (
-      <div className="min-h-screen bg-bg-luxury flex flex-col items-center justify-center p-6">
-        <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mb-4"></div>
+      <div className="min-h-screen bg-bg-luxury flex flex-col items-center justify-center p-6 text-center">
+        <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-4 border-accent/20 border-t-primary animate-spin"></div>
+          <div className="w-20 h-20 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-md">
+            <img src="/logo.png" alt="Stylist Edge Logo" className="w-full h-full object-cover" />
+          </div>
+        </div>
         <p className="font-serif-luxury text-lg tracking-widest text-primary animate-pulse">Stylist Edge Salon</p>
         <p className="text-xs text-accent uppercase tracking-widest mt-1">Loading experience...</p>
       </div>
@@ -252,39 +257,86 @@ export default function HomePage() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-          <a href="#" className="flex items-center gap-3 group">
+          <a
+            href="#"
+            className={`flex items-center group transition-all duration-500 ${
+              scrolled
+                ? 'bg-transparent border-transparent shadow-none rounded-full px-3 py-1.5 gap-3'
+                : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 rounded-full p-1.5 gap-0'
+            }`}
+          >
             {/* Elegant logo emblem */}
-            <div className="w-10 h-10 rounded-full border border-accent/30 bg-primary/5 flex items-center justify-center transition-all duration-300 group-hover:border-accent group-hover:bg-primary/10">
-              <span className="font-serif-luxury text-primary text-lg font-bold group-hover:text-accent transition-colors">S</span>
+            <div className="w-10 h-10 rounded-full border border-accent/30 bg-white overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:border-accent shrink-0">
+              <img src="/logo.png" alt="Stylist Edge Logo" className="w-full h-full object-cover" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-serif-luxury text-xl font-bold tracking-wider text-primary group-hover:text-accent transition-colors">
+            <div
+              className={`flex flex-col transition-all duration-500 overflow-hidden ${
+                scrolled
+                  ? 'opacity-100 max-w-[300px] translate-x-0'
+                  : 'opacity-0 max-w-0 -translate-x-2 pointer-events-none'
+              }`}
+            >
+              <span className="font-serif-luxury text-xl font-bold tracking-wider text-primary group-hover:text-accent transition-colors whitespace-nowrap">
                 {db.brand.name}
               </span>
-              <span className="text-[10px] tracking-widest text-accent uppercase font-medium -mt-1 hidden sm:block">
+              <span className="text-[10px] tracking-widest text-accent uppercase font-medium -mt-1 hidden sm:block whitespace-nowrap">
                 {db.brand.tagline}
               </span>
             </div>
           </a>
 
           {/* Nav links */}
-          <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-wider font-medium">
-            <a href="#services" className="text-primary hover:text-accent transition-colors duration-300">Services</a>
-            <a href="#signature" className="text-primary hover:text-accent transition-colors duration-300">Signature</a>
-            <a href="#about" className="text-primary hover:text-accent transition-colors duration-300">About</a>
-            <a href="#contact" className="text-primary hover:text-accent transition-colors duration-300">Contact</a>
+          <div className="hidden md:flex items-center gap-4 text-xs uppercase tracking-wider font-medium">
             <a
-              href="/admin"
-              className="px-4 py-2 border border-accent text-accent hover:bg-accent hover:text-white transition-all duration-300 rounded text-xs"
+              href="#services"
+              className={`transition-all duration-500 rounded-full px-4 py-2 text-xs uppercase tracking-wider font-medium ${
+                scrolled
+                  ? 'bg-transparent border-transparent text-primary hover:text-accent shadow-none'
+                  : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 text-primary hover:text-accent'
+              }`}
             >
-              Management
+              Services
+            </a>
+            <a
+              href="#signature"
+              className={`transition-all duration-500 rounded-full px-4 py-2 text-xs uppercase tracking-wider font-medium ${
+                scrolled
+                  ? 'bg-transparent border-transparent text-primary hover:text-accent shadow-none'
+                  : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 text-primary hover:text-accent'
+              }`}
+            >
+              Signature
+            </a>
+            <a
+              href="#about"
+              className={`transition-all duration-500 rounded-full px-4 py-2 text-xs uppercase tracking-wider font-medium ${
+                scrolled
+                  ? 'bg-transparent border-transparent text-primary hover:text-accent shadow-none'
+                  : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 text-primary hover:text-accent'
+              }`}
+            >
+              About
+            </a>
+            <a
+              href="#contact"
+              className={`transition-all duration-500 rounded-full px-4 py-2 text-xs uppercase tracking-wider font-medium ${
+                scrolled
+                  ? 'bg-transparent border-transparent text-primary hover:text-accent shadow-none'
+                  : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 text-primary hover:text-accent'
+              }`}
+            >
+              Contact
             </a>
           </div>
 
           {/* Quick call CTA on mobile */}
           <a
             href={`tel:${db.brand.contact.phone}`}
-            className="md:hidden p-2 rounded-full border border-accent bg-primary/5 text-primary hover:bg-accent hover:text-white transition-colors"
+            className={`md:hidden p-2.5 rounded-full border transition-all duration-500 ${
+              scrolled
+                ? 'border-accent bg-primary/5 text-primary hover:bg-accent hover:text-white'
+                : 'border-white/20 bg-white/95 text-primary shadow-sm'
+            }`}
             title="Call Us"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -311,8 +363,8 @@ export default function HomePage() {
         {/* Hero content */}
         <div className="relative z-20 max-w-5xl mx-auto px-6 text-center text-white pt-20 flex flex-col items-center">
           {/* Circular luxury badge logo */}
-          <div className="w-20 h-20 rounded-full border border-accent/40 bg-white/10 backdrop-blur-md flex items-center justify-center mb-8 shadow-xl animate-fade-in">
-            <span className="font-serif-luxury text-accent text-3xl font-semibold tracking-widest">SE</span>
+          <div className="w-20 h-20 rounded-full border border-accent/40 bg-white overflow-hidden flex items-center justify-center mb-8 shadow-xl animate-fade-in">
+            <img src="/logo.png" alt="Stylist Edge Badge" className="w-full h-full object-cover" />
           </div>
 
           <h1 className="font-serif-luxury text-5xl md:text-8xl font-normal tracking-wide leading-tight mb-4 drop-shadow-md max-w-4xl">
@@ -716,9 +768,14 @@ export default function HomePage() {
           
           {/* Logo & description */}
           <div className="space-y-4">
-            <h3 className="font-serif-luxury text-2xl font-semibold tracking-wider text-accent">
-              {db.brand.name}
-            </h3>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full border border-white/20 bg-white overflow-hidden flex items-center justify-center">
+                <img src="/logo.png" alt="Stylist Edge Logo" className="w-full h-full object-cover" />
+              </div>
+              <h3 className="font-serif-luxury text-2xl font-semibold tracking-wider text-accent">
+                {db.brand.name}
+              </h3>
+            </div>
             <p className="text-xs text-white/70 max-w-xs font-light tracking-wide leading-relaxed">
               Premium feminine luxury and personalized beauty curation designed to make you feel beautiful, poised, and confident.
             </p>
@@ -732,7 +789,6 @@ export default function HomePage() {
               <a href="#signature" className="hover:text-accent hover:underline">Signature Deals</a>
               <a href="#about" className="hover:text-accent hover:underline">About Edge</a>
               <a href="#contact" className="hover:text-accent hover:underline">Connect/Find Us</a>
-              <a href="/admin" className="hover:text-accent hover:underline">Admin Panel</a>
             </div>
           </div>
 

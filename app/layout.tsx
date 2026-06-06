@@ -23,6 +23,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Stylist Edge Salon | Style That Speaks Confidence",
   description: "Experience the ultimate in feminine luxury, spa therapies, advanced facial treatments, and precision hair styling at Stylist Edge Salon, Dharmapuri. Curated by E. Ranjitha.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

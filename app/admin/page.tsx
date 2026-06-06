@@ -403,6 +403,14 @@ const renderPriceInputs = (service: Service) => {
   return (
     <div className="adminShell">
       <div className="sidebar">
+        <div className="flex items-center gap-3 pb-4 mb-2 border-b border-white/10">
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-white flex items-center justify-center">
+            <img src="/logo.png" alt="Stylist Edge Logo" className="w-full h-full object-cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          <div className="font-serif-luxury text-sm font-semibold tracking-wider text-white">
+            Admin Panel
+          </div>
+        </div>
         <div className="sectionHeader">Categories</div>
         <div className="categoryList">
           {database.categories.map((category) => {
