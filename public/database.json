@@ -12,7 +12,7 @@
     {
       "id": "threading",
       "title": "Threading & Precision Hair Removal",
-      "image": "assets/threading.jpg",
+      "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Eyebrow", "price": 50, "priceType": "fixed" },
@@ -23,7 +23,7 @@
     {
       "id": "waxing",
       "title": "Waxing & Body Hair Removal",
-      "image": "assets/waxing.jpg",
+      "image": "https://images.unsplash.com/photo-1596178060671-7a80dc8059ea?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Full Arms / Full Legs", "price": 800, "priceType": "fixed" },
@@ -37,7 +37,7 @@
     {
       "id": "manicure",
       "title": "Manicure & Pedicure",
-      "image": "assets/manicure.jpg",
+      "image": "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Classic Manicure / Pedicure", "price": 700, "priceType": "fixed" },
@@ -51,7 +51,7 @@
     {
       "id": "cleanup",
       "title": "Basic Skin Care & Cleanups",
-      "image": "assets/cleanup.jpg",
+      "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Classic Cleanup", "price": 300, "priceType": "fixed" },
@@ -64,7 +64,7 @@
     {
       "id": "facials",
       "title": "Advanced Facial Treatments",
-      "image": "assets/facials.jpg",
+      "image": "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
         { "name": "Classic Facial", "price": 600, "priceType": "fixed" },
@@ -85,7 +85,7 @@
     {
       "id": "spa",
       "title": "Spa & Body Therapies",
-      "image": "assets/spa.jpg",
+      "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
         { "name": "Coco Butter Massage (60 min)", "price": 2000, "priceType": "fixed" },
@@ -96,7 +96,7 @@
     {
       "id": "reflexology",
       "title": "Reflexology & Relaxation",
-      "image": "assets/reflexology.jpg",
+      "image": "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Hand / Feet Reflexology (20 min)", "price": 400, "priceType": "fixed" },
@@ -106,7 +106,7 @@
     {
       "id": "haircare",
       "title": "Hair Care & Scalp Treatments",
-      "image": "assets/haircare.jpg",
+      "image": "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
         {
@@ -139,7 +139,7 @@
     {
       "id": "hairchemical",
       "title": "Hair Styling & Chemical Treatments",
-      "image": "assets/hairchem.jpg",
+      "image": "https://images.unsplash.com/photo-1595893436099-e9274272d5f8?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Hair Coloring", "price": null, "priceType": "custom" },
@@ -150,7 +150,7 @@
     {
       "id": "clinical",
       "title": "Skin & Clinical Treatments",
-      "image": "assets/clinical.jpg",
+      "image": "https://images.unsplash.com/photo-1620331702289-448a6ebc7856?auto=format&fit=crop&q=80&w=800",
       "highlight": false,
       "services": [
         { "name": "Acne Treatment", "price": null, "priceType": "custom" },
@@ -163,7 +163,7 @@
     {
       "id": "bridal",
       "title": "Bridal & Occasion Services",
-      "image": "assets/bridal.jpg",
+      "image": "https://images.unsplash.com/photo-1484863137850-59afcfe05386?auto=format&fit=crop&q=80&w=800",
       "highlight": true,
       "services": [
         { "name": "Bridal Makeup", "price": null, "priceType": "custom" }
