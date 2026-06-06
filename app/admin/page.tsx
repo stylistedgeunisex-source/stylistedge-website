@@ -656,7 +656,9 @@ export default function AdminPage() {
         }
 
         .fieldRow input,
-        .fieldRow select {
+        .fieldRow select,
+        .priceBlock input,
+        .priceBlock select {
           width: 100%;
           min-height: 36px;
           padding: 8px 10px;
@@ -668,8 +670,16 @@ export default function AdminPage() {
         }
 
         .fieldRow input::placeholder,
-        .fieldRow select::placeholder {
+        .fieldRow select::placeholder,
+        .priceBlock input::placeholder,
+        .priceBlock select::placeholder {
           color: #858585;
+        }
+
+        .priceBlock label,
+        .serviceBlock label,
+        .fieldRow label {
+          color: #000000;
         }
 
         .checkboxRow {
