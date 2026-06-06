@@ -213,7 +213,7 @@ export default function HomePage() {
             <strong className="font-semibold text-primary text-sm">₹{gender.male}</strong>
           </span>
           <span className="inline-flex items-center justify-end text-xs text-text-muted">
-            <span className="font-medium mr-1 text-[10px] uppercase tracking-wider bg-accent/15 text-accent-light px-1.5 py-0.5 rounded border border-accent/10">Female</span>
+            <span className="font-medium mr-1 text-[10px] uppercase tracking-wider bg-accent/10 text-accent-light px-1.5 py-0.5 rounded border border-accent/20">Female</span>
             <strong className="font-semibold text-primary text-sm">₹{gender.female}</strong>
           </span>
         </div>
@@ -246,7 +246,7 @@ export default function HomePage() {
   const signatureCategories = db.categories.filter((cat) => cat.highlight);
 
   return (
-    <div className="relative min-h-screen font-sans-luxury text-text-luxury selection:bg-accent selection:text-white overflow-x-hidden">
+    <div className="relative min-h-screen font-sans-luxury text-text-luxury selection:bg-accent/60 selection:text-primary overflow-x-hidden">
       
       {/* FLOATING NAVBAR */}
       <nav
@@ -261,12 +261,12 @@ export default function HomePage() {
             href="#"
             className={`flex items-center group transition-all duration-500 ${
               scrolled
-                ? 'bg-transparent border-transparent shadow-none rounded-full px-3 py-1.5 gap-3'
-                : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 rounded-full p-1.5 gap-0'
+                ? 'opacity-100 translate-x-0 pointer-events-auto bg-transparent px-3 py-1.5 gap-3'
+                : 'opacity-0 -translate-x-4 pointer-events-none gap-0'
             }`}
           >
             {/* Elegant logo emblem */}
-            <div className="w-10 h-10 rounded-full border border-accent/30 bg-white overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:border-accent shrink-0">
+            <div className="w-10 h-10 rounded-full bg-white overflow-hidden flex items-center justify-center transition-all duration-300 shrink-0">
               <img src="/logo.png" alt="Stylist Edge Logo" className="w-full h-full object-cover" />
             </div>
             <div
@@ -279,7 +279,7 @@ export default function HomePage() {
               <span className="font-serif-luxury text-xl font-bold tracking-wider text-primary group-hover:text-accent transition-colors whitespace-nowrap">
                 {db.brand.name}
               </span>
-              <span className="text-[10px] tracking-widest text-accent uppercase font-medium -mt-1 hidden sm:block whitespace-nowrap">
+              <span className="text-[10px] tracking-widest text-[#D4AF37] uppercase font-medium -mt-1 hidden sm:block whitespace-nowrap">
                 {db.brand.tagline}
               </span>
             </div>
@@ -371,7 +371,7 @@ export default function HomePage() {
             {db.brand.name}
           </h1>
 
-          <p className="text-sm md:text-xl font-light tracking-widest text-accent uppercase mb-12 drop-shadow">
+          <p className="text-sm md:text-xl font-light tracking-widest text-[#D4AF37] uppercase mb-12 drop-shadow">
             {db.brand.tagline}
           </p>
 
@@ -400,8 +400,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           {/* Section heading */}
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="text-accent text-xs font-semibold uppercase tracking-widest block mb-3">Our Offerings</span>
-            <h2 className="font-serif-luxury text-3xl md:text-5xl font-normal text-primary mb-6">
+            <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest block mb-3">Our Offerings</span>
+            <h2 className="font-serif-luxury text-3xl md:text-5xl font-bold text-black mb-6">
               The Services Experience
             </h2>
             <div className="w-24 h-[1px] bg-accent mx-auto mb-6"></div>
@@ -466,7 +466,7 @@ export default function HomePage() {
 
                       {/* Title & custom description */}
                       <div className="my-auto px-2">
-                        <h3 className="font-serif-luxury text-lg md:text-xl font-medium text-primary mb-3">
+                        <h3 className="font-serif-luxury text-lg md:text-xl font-bold text-black mb-3">
                           {category.title}
                         </h3>
                         <p className="text-xs md:text-sm text-text-muted leading-relaxed max-w-[240px] mx-auto font-light">
@@ -516,8 +516,8 @@ export default function HomePage() {
           {/* Panel Header */}
           <div className="px-6 md:px-12 pb-4 flex justify-between items-center border-b border-primary/5">
             <div>
-              <span className="text-[10px] tracking-widest text-accent uppercase font-semibold">Service Catalogue</span>
-              <h3 className="font-serif-luxury text-2xl md:text-3xl font-medium text-primary">
+              <span className="text-[10px] tracking-widest text-[#D4AF37] uppercase font-bold">Service Catalogue</span>
+              <h3 className="font-serif-luxury text-2xl md:text-3xl font-bold text-black">
                 {activeCategory?.title}
               </h3>
             </div>
@@ -573,8 +573,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           {/* Section title */}
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="text-accent text-xs font-semibold uppercase tracking-widest block mb-3">Masterpieces</span>
-            <h2 className="font-serif-luxury text-3xl md:text-5xl font-normal text-primary mb-6">
+            <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest block mb-3">Masterpieces</span>
+            <h2 className="font-serif-luxury text-3xl md:text-5xl font-bold text-black mb-6">
               Signature Experiences
             </h2>
             <div className="w-24 h-[1px] bg-accent mx-auto mb-6"></div>
@@ -615,8 +615,8 @@ export default function HomePage() {
                   {/* Body Content */}
                   <div className="p-8 flex-1 flex flex-col justify-between">
                     <div>
-                      <span className="text-[10px] tracking-widest text-accent uppercase font-bold mb-1.5 block">Exclusive Offering</span>
-                      <h3 className="font-serif-luxury text-2xl font-light text-primary mb-3 group-hover:text-accent transition-colors">
+                      <span className="text-[10px] tracking-widest text-[#D4AF37] uppercase font-bold mb-1.5 block">Exclusive Offering</span>
+                      <h3 className="font-serif-luxury text-2xl font-bold text-black mb-3 group-hover:text-[#D4AF37] transition-colors">
                         {category.title}
                       </h3>
                       <p className="text-sm text-text-muted leading-relaxed font-light mb-6">
@@ -662,8 +662,8 @@ export default function HomePage() {
 
             {/* Editorial Content */}
             <div className="lg:col-span-7 space-y-6 lg:pl-6">
-              <span className="text-accent text-xs font-semibold uppercase tracking-widest block">The Edge Story</span>
-              <h2 className="font-serif-luxury text-3xl md:text-5xl font-normal text-primary leading-tight">
+              <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest block">The Edge Story</span>
+              <h2 className="font-serif-luxury text-3xl md:text-5xl font-bold text-black leading-tight">
                 Where Style Meets Confidence
               </h2>
               <div className="w-20 h-[1.5px] bg-accent"></div>
@@ -701,8 +701,8 @@ export default function HomePage() {
       <section id="contact" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-accent text-xs font-semibold uppercase tracking-widest block mb-3">Reservations & Location</span>
-            <h2 className="font-serif-luxury text-3xl md:text-5xl font-normal text-primary mb-6">
+            <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest block mb-3">Reservations & Location</span>
+            <h2 className="font-serif-luxury text-3xl md:text-5xl font-bold text-black mb-6">
               Connect With Us
             </h2>
             <div className="w-24 h-[1px] bg-accent mx-auto"></div>
