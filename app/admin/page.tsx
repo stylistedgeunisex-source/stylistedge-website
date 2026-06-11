@@ -121,6 +121,7 @@ export default function AdminPage() {
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [isSaving, setIsSaving] = useState(false);
    const [bookings, setBookings] = useState<any[]>([]);
+  const [top5, setTop5] = useState<{ phone: string; name: string; count: number }[]>([]);
   const [overrideDate, setOverrideDate] = useState('');
   const [overrideIsOpen, setOverrideIsOpen] = useState(true);
   const [overrideOpen, setOverrideOpen] = useState('09:00');
@@ -134,6 +135,13 @@ export default function AdminPage() {
           if (data.success) {
             setBookings(data.bookings);
           }
+        });
+    }
+    if (selectedCategoryId === 'analytics') {
+      fetch('/api/admin/analytics')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) setTop5(data.top5);
         });
     }
   }, [selectedCategoryId]);
@@ -587,6 +595,12 @@ const renderPriceInputs = (service: Service) => {
           >
             <div className="categoryLabel">Bookings</div>
           </div>
+          <div
+            className={`categoryItem ${selectedCategoryId === 'analytics' ? 'selected' : ''}`}
+            onClick={() => selectCategory('analytics')}
+          >
+            <div className="categoryLabel">Analytics</div>
+          </div>
         </div>
         <div className="sectionHeader" style={{ marginTop: '16px' }}>Categories</div>
         <div className="categoryList">
@@ -868,7 +882,37 @@ const renderPriceInputs = (service: Service) => {
           </div>
         )}
 
-        {selectedCategoryId !== 'brand' && selectedCategoryId !== 'timings' && selectedCategoryId !== 'bookings' && (
+        {selectedCategoryId === 'analytics' && (
+          <div className="sectionBlock">
+            <div className="sectionHeader">Top 5 Frequent Customers</div>
+            {top5.length > 0 ? (
+              <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', color: 'black' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #eee' }}>
+                    <th style={{ padding: '8px' }}>#</th>
+                    <th style={{ padding: '8px' }}>Name</th>
+                    <th style={{ padding: '8px' }}>Phone</th>
+                    <th style={{ padding: '8px', textAlign: 'right' }}>Bookings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {top5.map((user, idx) => (
+                    <tr key={user.phone} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                      <td style={{ padding: '8px', fontWeight: 'bold', color: idx === 0 ? '#b8860b' : 'black' }}>{idx + 1}</td>
+                      <td style={{ padding: '8px' }}>{user.name}</td>
+                      <td style={{ padding: '8px' }}>{user.phone}</td>
+                      <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold' }}>{user.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="emptyState" style={{ color: 'black' }}>No booking data found.</div>
+            )}
+          </div>
+        )}
+
+        {selectedCategoryId !== 'brand' && selectedCategoryId !== 'timings' && selectedCategoryId !== 'bookings' && selectedCategoryId !== 'analytics' && (
         <div className="sectionBlock">
           <div className="sectionHeader">
             {selectedCategory ? selectedCategory.title : 'Select a Category'}

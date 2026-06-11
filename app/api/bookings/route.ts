@@ -127,7 +127,15 @@ export async function GET(request: Request) {
 
   // 3. Generate slots (30 min intervals)
   const slots = [];
-  
+
+  // Helper: convert "HH:MM" to "h:MM AM/PM"
+  function to12Hour(hhmm: string): string {
+    const [h, m] = hhmm.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hour = h % 12 === 0 ? 12 : h % 12;
+    return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+  }
+
   const year = dateObj.getFullYear();
   const month = String(dateObj.getMonth() + 1).padStart(2, '0');
   const day = String(dateObj.getDate()).padStart(2, '0');
@@ -137,10 +145,12 @@ export async function GET(request: Request) {
   const closeTime = new Date(`${dateBase}T${dayTiming.close}`);
 
   while (currentTime < closeTime) {
-    const timeString = currentTime.toTimeString().substring(0, 5); // HH:MM
-    // Add slot if bookings at this time are less than 2
-    if ((slotCounts[timeString] || 0) < 2) {
-      slots.push(timeString);
+    const timeString24 = currentTime.toTimeString().substring(0, 5); // HH:MM
+    const timeString12 = to12Hour(timeString24);
+    // Add slot if bookings at this time are less than 2 (check both formats for compatibility)
+    const count = (slotCounts[timeString24] || 0) + (slotCounts[timeString12] || 0);
+    if (count < 2) {
+      slots.push(timeString12);
     }
     currentTime = new Date(currentTime.getTime() + 30 * 60000); // add 30 mins
   }
