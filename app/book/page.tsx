@@ -24,6 +24,7 @@ export default function BookPage() {
   const [phone, setPhone] = useState('');
   const [gender, setGender] = useState('unspecified');
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Manage state
   const [managePhone, setManagePhone] = useState('');
@@ -35,11 +36,20 @@ export default function BookPage() {
   useEffect(() => {
     if (view === 'book' && date) {
       setLoading(true);
+      setErrorMsg('');
       fetch(`/api/bookings?date=${date}`)
         .then(res => res.json())
         .then(data => {
-          if (data.success) setSlots(data.slots);
-          else setSlots([]);
+          if (data.success) {
+            setSlots(data.slots);
+          } else {
+            setSlots([]);
+            setErrorMsg(data.error || 'Failed to fetch slots.');
+          }
+        })
+        .catch(() => {
+          setSlots([]);
+          setErrorMsg('Failed to connect to the booking service.');
         })
         .finally(() => setLoading(false));
     }
@@ -206,6 +216,8 @@ export default function BookPage() {
                 <h2 className="text-lg font-semibold mb-4">Available Slots for {formatToDDMMYYYY(date)}</h2>
                 {loading && !slots.length ? (
                   <p>Loading slots...</p>
+                ) : errorMsg ? (
+                  <p className="text-red-500">{errorMsg} Please check your database settings or try again.</p>
                 ) : slots.length > 0 ? (
                   <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                     {slots.map(slot => (
