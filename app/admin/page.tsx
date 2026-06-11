@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type PriceType = 'fixed' | 'range' | 'gender' | 'custom';
 
@@ -36,10 +37,34 @@ interface Brand {
   contact: Contact;
 }
 
+export interface DailyTiming {
+  open: string;
+  close: string;
+  isOpen: boolean;
+}
+
+export interface Timings {
+  default: {
+    monday: DailyTiming;
+    tuesday: DailyTiming;
+    wednesday: DailyTiming;
+    thursday: DailyTiming;
+    friday: DailyTiming;
+    saturday: DailyTiming;
+    sunday: DailyTiming;
+  };
+  scheduled: {
+    [date: string]: DailyTiming;
+  };
+}
+
 interface Database {
   brand: Brand;
   categories: Category[];
+  timings?: Timings;
 }
+
+const defaultDailyTiming = { open: '09:00', close: '17:00', isOpen: true };
 
 const emptyDatabase: Database = {
   brand: {
@@ -52,7 +77,19 @@ const emptyDatabase: Database = {
       address: ''
     }
   },
-  categories: []
+  categories: [],
+  timings: {
+    default: {
+      monday: { ...defaultDailyTiming },
+      tuesday: { ...defaultDailyTiming },
+      wednesday: { ...defaultDailyTiming },
+      thursday: { ...defaultDailyTiming },
+      friday: { ...defaultDailyTiming },
+      saturday: { ...defaultDailyTiming },
+      sunday: { ...defaultDailyTiming, isOpen: false },
+    },
+    scheduled: {}
+  }
 };
 
 function createId() {
@@ -77,11 +114,35 @@ function omitInternalKeys(key: string, value: any) {
 }
 
 export default function AdminPage() {
+  const router = useRouter();
   const [database, setDatabase] = useState<Database>(emptyDatabase);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [bookings, setBookings] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (selectedCategoryId === 'bookings') {
+      fetch('/api/admin/bookings')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setBookings(data.bookings);
+          }
+        });
+    }
+  }, [selectedCategoryId]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      router.push('/admin/login');
+      router.refresh();
+    } catch (e) {
+      console.error('Logout failed', e);
+    }
+  };
 
   const saveDatabaseToServer = async () => {
     setIsSaving(true);
@@ -117,7 +178,8 @@ export default function AdminPage() {
             ...json.brand,
             heroImage: json.brand.heroImage || "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&q=80&w=1600"
           },
-          categories: ensureServiceIds(json.categories)
+          categories: ensureServiceIds(json.categories),
+          timings: json.timings || emptyDatabase.timings
         });
         setIsLoaded(true);
       })
@@ -439,12 +501,30 @@ const renderPriceInputs = (service: Service) => {
             Admin Panel
           </div>
         </div>
+        <button 
+          onClick={handleLogout}
+          className="w-full bg-red-600/20 text-red-400 hover:bg-red-600/30 transition-colors py-2 rounded-lg text-sm font-medium mb-4"
+        >
+          Logout
+        </button>
         <div className="categoryList">
           <div
             className={`categoryItem ${selectedCategoryId === 'brand' ? 'selected' : ''}`}
             onClick={() => selectCategory('brand')}
           >
             <div className="categoryLabel">Brand Settings</div>
+          </div>
+          <div
+            className={`categoryItem ${selectedCategoryId === 'timings' ? 'selected' : ''}`}
+            onClick={() => selectCategory('timings')}
+          >
+            <div className="categoryLabel">Store Timings</div>
+          </div>
+          <div
+            className={`categoryItem ${selectedCategoryId === 'bookings' ? 'selected' : ''}`}
+            onClick={() => selectCategory('bookings')}
+          >
+            <div className="categoryLabel">Bookings</div>
           </div>
         </div>
         <div className="sectionHeader" style={{ marginTop: '16px' }}>Categories</div>
@@ -545,7 +625,101 @@ const renderPriceInputs = (service: Service) => {
           </div>
         )}
 
-        {selectedCategoryId !== 'brand' && (
+        {selectedCategoryId === 'timings' && (
+          <div className="sectionBlock">
+            <div className="sectionHeader">Default Weekly Timings</div>
+            {database.timings?.default && Object.entries(database.timings.default).map(([day, timing]) => (
+              <div key={day} className="fieldRow" style={{ flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '100px', textTransform: 'capitalize', fontWeight: 'bold' }}>{day}</div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <input
+                    type="checkbox"
+                    checked={timing.isOpen}
+                    onChange={(e) => updateDatabase(current => ({
+                      ...current,
+                      timings: {
+                        ...current.timings!,
+                        default: {
+                          ...current.timings!.default,
+                          [day]: { ...timing, isOpen: e.target.checked }
+                        }
+                      }
+                    }))}
+                    style={{ width: 'auto', minHeight: 'auto' }}
+                  />
+                  Open
+                </label>
+                {timing.isOpen && (
+                  <>
+                    <input
+                      type="time"
+                      value={timing.open}
+                      onChange={(e) => updateDatabase(current => ({
+                        ...current,
+                        timings: {
+                          ...current.timings!,
+                          default: {
+                            ...current.timings!.default,
+                            [day]: { ...timing, open: e.target.value }
+                          }
+                        }
+                      }))}
+                      style={{ width: '120px' }}
+                    />
+                    <span>to</span>
+                    <input
+                      type="time"
+                      value={timing.close}
+                      onChange={(e) => updateDatabase(current => ({
+                        ...current,
+                        timings: {
+                          ...current.timings!,
+                          default: {
+                            ...current.timings!.default,
+                            [day]: { ...timing, close: e.target.value }
+                          }
+                        }
+                      }))}
+                      style={{ width: '120px' }}
+                    />
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {selectedCategoryId === 'bookings' && (
+          <div className="sectionBlock">
+            <div className="sectionHeader">Customer Bookings</div>
+            {bookings.length > 0 ? (
+              <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', color: 'black' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #eee' }}>
+                    <th style={{ padding: '8px' }}>Date</th>
+                    <th style={{ padding: '8px' }}>Time</th>
+                    <th style={{ padding: '8px' }}>Phone</th>
+                    <th style={{ padding: '8px' }}>Service ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings.map(booking => (
+                    <tr key={booking.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                      <td style={{ padding: '8px' }}>{booking.date}</td>
+                      <td style={{ padding: '8px' }}>{booking.time}</td>
+                      <td style={{ padding: '8px' }}>{booking.phone}</td>
+                      <td style={{ padding: '8px' }}>{booking.service_id}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="emptyState" style={{ color: 'black' }}>No bookings found.</div>
+            )}
+          </div>
+        )}
+
+        {selectedCategoryId !== 'brand' && selectedCategoryId !== 'timings' && selectedCategoryId !== 'bookings' && (
         <div className="sectionBlock">
           <div className="sectionHeader">
             {selectedCategory ? selectedCategory.title : 'Select a Category'}
