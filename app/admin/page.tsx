@@ -120,7 +120,11 @@ export default function AdminPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [bookings, setBookings] = useState<any[]>([]);
+   const [bookings, setBookings] = useState<any[]>([]);
+  const [overrideDate, setOverrideDate] = useState('');
+  const [overrideIsOpen, setOverrideIsOpen] = useState(true);
+  const [overrideOpen, setOverrideOpen] = useState('09:00');
+  const [overrideClose, setOverrideClose] = useState('17:00');
 
   useEffect(() => {
     if (selectedCategoryId === 'bookings') {
@@ -236,6 +240,63 @@ export default function AdminPage() {
 
   const selectCategory = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
+  };
+
+  const addOverride = () => {
+    if (!overrideDate) {
+      alert('Please select a date.');
+      return;
+    }
+    updateDatabase(current => {
+      const timings = current.timings || {
+        default: { ...emptyDatabase.timings!.default },
+        scheduled: { ...emptyDatabase.timings!.scheduled }
+      };
+      const scheduled = timings.scheduled || {};
+      return {
+        ...current,
+        timings: {
+          ...timings,
+          scheduled: {
+            ...scheduled,
+            [overrideDate]: {
+              isOpen: overrideIsOpen,
+              open: overrideOpen,
+              close: overrideClose
+            }
+          }
+        }
+      };
+    });
+    setOverrideDate('');
+  };
+
+  const removeOverride = (dateKey: string) => {
+    updateDatabase(current => {
+      const timings = current.timings || {
+        default: { ...emptyDatabase.timings!.default },
+        scheduled: { ...emptyDatabase.timings!.scheduled }
+      };
+      const scheduled = { ...timings.scheduled };
+      delete scheduled[dateKey];
+      return {
+        ...current,
+        timings: {
+          ...timings,
+          scheduled
+        }
+      };
+    });
+  };
+
+  const formatToDDMMYYYY = (dateStr: string): string => {
+    if (!dateStr) return '';
+    if (dateStr.includes('/')) return dateStr;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateStr;
   };
 
   const updateCategoryField = (field: keyof Omit<Category, 'id' | 'services'>, value: string | boolean) => {
@@ -626,67 +687,153 @@ const renderPriceInputs = (service: Service) => {
         )}
 
         {selectedCategoryId === 'timings' && (
-          <div className="sectionBlock">
-            <div className="sectionHeader">Default Weekly Timings</div>
-            {database.timings?.default && Object.entries(database.timings.default).map(([day, timing]) => (
-              <div key={day} className="fieldRow" style={{ flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '100px', textTransform: 'capitalize', fontWeight: 'bold' }}>{day}</div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <>
+            <div className="sectionBlock">
+              <div className="sectionHeader">Default Weekly Timings</div>
+              {database.timings?.default && Object.entries(database.timings.default).map(([day, timing]) => (
+                <div key={day} className="fieldRow" style={{ flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '100px', textTransform: 'capitalize', fontWeight: 'bold' }}>{day}</div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <input
+                      type="checkbox"
+                      checked={timing.isOpen}
+                      onChange={(e) => updateDatabase(current => ({
+                        ...current,
+                        timings: {
+                          ...current.timings!,
+                          default: {
+                            ...current.timings!.default,
+                            [day]: { ...timing, isOpen: e.target.checked }
+                          }
+                        }
+                      }))}
+                      style={{ width: 'auto', minHeight: 'auto' }}
+                    />
+                    Open
+                  </label>
+                  {timing.isOpen && (
+                    <>
+                      <input
+                        type="time"
+                        value={timing.open}
+                        onChange={(e) => updateDatabase(current => ({
+                          ...current,
+                          timings: {
+                            ...current.timings!,
+                            default: {
+                              ...current.timings!.default,
+                              [day]: { ...timing, open: e.target.value }
+                            }
+                          }
+                        }))}
+                        style={{ width: '120px' }}
+                      />
+                      <span>to</span>
+                      <input
+                        type="time"
+                        value={timing.close}
+                        onChange={(e) => updateDatabase(current => ({
+                          ...current,
+                          timings: {
+                            ...current.timings!,
+                            default: {
+                              ...current.timings!.default,
+                              [day]: { ...timing, close: e.target.value }
+                            }
+                          }
+                        }))}
+                        style={{ width: '120px' }}
+                      />
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="sectionBlock" style={{ marginTop: '20px' }}>
+              <div className="sectionHeader">Date-Specific Timings Overrides</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '10px 0' }}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <input
-                    type="checkbox"
-                    checked={timing.isOpen}
-                    onChange={(e) => updateDatabase(current => ({
-                      ...current,
-                      timings: {
-                        ...current.timings!,
-                        default: {
-                          ...current.timings!.default,
-                          [day]: { ...timing, isOpen: e.target.checked }
-                        }
-                      }
-                    }))}
-                    style={{ width: 'auto', minHeight: 'auto' }}
+                    type="date"
+                    value={overrideDate}
+                    onChange={(e) => setOverrideDate(e.target.value)}
+                    style={{ width: '160px', color: 'black' }}
                   />
-                  Open
-                </label>
-                {timing.isOpen && (
-                  <>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'black' }}>
                     <input
-                      type="time"
-                      value={timing.open}
-                      onChange={(e) => updateDatabase(current => ({
-                        ...current,
-                        timings: {
-                          ...current.timings!,
-                          default: {
-                            ...current.timings!.default,
-                            [day]: { ...timing, open: e.target.value }
-                          }
-                        }
-                      }))}
-                      style={{ width: '120px' }}
+                      type="checkbox"
+                      checked={overrideIsOpen}
+                      onChange={(e) => setOverrideIsOpen(e.target.checked)}
+                      style={{ width: 'auto', minHeight: 'auto' }}
                     />
-                    <span>to</span>
-                    <input
-                      type="time"
-                      value={timing.close}
-                      onChange={(e) => updateDatabase(current => ({
-                        ...current,
-                        timings: {
-                          ...current.timings!,
-                          default: {
-                            ...current.timings!.default,
-                            [day]: { ...timing, close: e.target.value }
-                          }
-                        }
-                      }))}
-                      style={{ width: '120px' }}
-                    />
-                  </>
+                    Open
+                  </label>
+                  {overrideIsOpen && (
+                    <>
+                      <input
+                        type="time"
+                        value={overrideOpen}
+                        onChange={(e) => setOverrideOpen(e.target.value)}
+                        style={{ width: '120px', color: 'black' }}
+                      />
+                      <span style={{ color: 'black' }}>to</span>
+                      <input
+                        type="time"
+                        value={overrideClose}
+                        onChange={(e) => setOverrideClose(e.target.value)}
+                        style={{ width: '120px', color: 'black' }}
+                      />
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    onClick={addOverride}
+                    style={{
+                      backgroundColor: '#111',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Add Override
+                  </button>
+                </div>
+
+                {database.timings?.scheduled && Object.keys(database.timings.scheduled).length > 0 && (
+                  <div style={{ marginTop: '15px' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '10px', color: 'black' }}>Active Overrides:</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {Object.entries(database.timings.scheduled).map(([dateKey, timing]) => (
+                        <div key={dateKey} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: '#f5f5f5', borderRadius: '4px' }}>
+                          <span style={{ color: 'black' }}>
+                            <strong>{formatToDDMMYYYY(dateKey)}</strong>: {timing.isOpen ? `${timing.open} - ${timing.close}` : 'Closed'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeOverride(dateKey)}
+                            style={{
+                              backgroundColor: '#ff4d4f',
+                              color: '#fff',
+                              border: 'none',
+                              padding: '4px 10px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '12px'
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
-            ))}
-          </div>
+            </div>
+          </>
         )}
 
         {selectedCategoryId === 'bookings' && (

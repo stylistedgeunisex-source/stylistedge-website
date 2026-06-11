@@ -3,6 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+function formatToDDMMYYYY(dateStr: string): string {
+  if (!dateStr) return '';
+  if (dateStr.includes('/')) return dateStr;
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return dateStr;
+}
+
 export default function BookPage() {
   const [view, setView] = useState<'book' | 'manage'>('book');
 
@@ -193,7 +203,7 @@ export default function BookPage() {
 
             {date && (
               <div className="pt-4 border-t">
-                <h2 className="text-lg font-semibold mb-4">Available Slots for {date}</h2>
+                <h2 className="text-lg font-semibold mb-4">Available Slots for {formatToDDMMYYYY(date)}</h2>
                 {loading && !slots.length ? (
                   <p>Loading slots...</p>
                 ) : slots.length > 0 ? (

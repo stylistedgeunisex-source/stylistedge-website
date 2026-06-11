@@ -3,6 +3,50 @@ import { supabase } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
+const defaultDailyTiming = { open: '09:00', close: '17:00', isOpen: true };
+const defaultWeeklyTimings: Record<string, typeof defaultDailyTiming> = {
+  monday: { ...defaultDailyTiming },
+  tuesday: { ...defaultDailyTiming },
+  wednesday: { ...defaultDailyTiming },
+  thursday: { ...defaultDailyTiming },
+  friday: { ...defaultDailyTiming },
+  saturday: { ...defaultDailyTiming },
+  sunday: { ...defaultDailyTiming, isOpen: false },
+};
+
+// Helper to parse date string (handles DD/MM/YYYY and YYYY-MM-DD)
+function parseDate(dateStr: string): Date {
+  if (dateStr.includes('/')) {
+    const [day, month, year] = dateStr.split('/').map(Number);
+    return new Date(year, month - 1, day);
+  }
+  if (dateStr.includes('-')) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+  return new Date(dateStr);
+}
+
+// Helper to convert any date format to YYYY-MM-DD (for DB query/insert)
+function formatToYYYYMMDD(dateStr: string): string {
+  if (dateStr.includes('/')) {
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  return dateStr;
+}
+
+// Helper to convert YYYY-MM-DD to DD/MM/YYYY
+function formatToDDMMYYYY(dateStr: string): string {
+  if (!dateStr) return '';
+  if (dateStr.includes('/')) return dateStr;
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return dateStr;
+}
+
 // Helper to get timings from database.json
 function getStoreTimings() {
   try {
@@ -16,34 +60,49 @@ function getStoreTimings() {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const date = searchParams.get('date');
+  const dateParam = searchParams.get('date');
   const phone = searchParams.get('phone');
 
   // If phone is provided, return active bookings for that phone (for manage)
   if (phone) {
+    const todayStr = new Date().toISOString().split('T')[0];
     const { data, error } = await supabase
       .from('bookings')
       .select('*')
       .eq('phone', phone)
-      .gte('date', new Date().toISOString().split('T')[0]) // Only upcoming or today
+      .gte('date', todayStr) // Only upcoming or today
       .order('date', { ascending: true })
       .order('time', { ascending: true });
 
     if (error) {
       return NextResponse.json({ success: false, error: 'Failed to fetch your bookings' }, { status: 500 });
     }
-    return NextResponse.json({ success: true, bookings: data });
+
+    // Format all dates to DD/MM/YYYY before sending to client
+    const formattedData = data.map(b => ({
+      ...b,
+      date: formatToDDMMYYYY(b.date)
+    }));
+
+    return NextResponse.json({ success: true, bookings: formattedData });
   }
 
-  if (!date) return NextResponse.json({ success: false, error: 'Date or Phone is required' }, { status: 400 });
+  if (!dateParam) return NextResponse.json({ success: false, error: 'Date or Phone is required' }, { status: 400 });
 
+  const dateObj = parseDate(dateParam);
+  if (isNaN(dateObj.getTime())) {
+    return NextResponse.json({ success: false, error: 'Invalid date format' }, { status: 400 });
+  }
+
+  const dbDateStr = formatToYYYYMMDD(dateParam);
+  const dayOfWeek = dateObj.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  
   // 1. Get timings for this day
   const timings = getStoreTimings();
-  const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  let dayTiming = timings?.default?.[dayOfWeek] || defaultWeeklyTimings[dayOfWeek];
   
-  let dayTiming = timings?.default?.[dayOfWeek];
-  if (timings?.scheduled?.[date]) {
-    dayTiming = timings.scheduled[date];
+  if (timings?.scheduled?.[dbDateStr]) {
+    dayTiming = timings.scheduled[dbDateStr];
   }
 
   if (!dayTiming || !dayTiming.isOpen) {
@@ -54,7 +113,7 @@ export async function GET(request: Request) {
   const { data: bookings, error } = await supabase
     .from('bookings')
     .select('time')
-    .eq('date', date);
+    .eq('date', dbDateStr);
 
   if (error) {
     return NextResponse.json({ success: false, error: 'Failed to fetch bookings' }, { status: 500 });
@@ -68,8 +127,14 @@ export async function GET(request: Request) {
 
   // 3. Generate slots (30 min intervals)
   const slots = [];
-  let currentTime = new Date(`${date}T${dayTiming.open}`);
-  const closeTime = new Date(`${date}T${dayTiming.close}`);
+  
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const dateBase = `${year}-${month}-${day}`;
+
+  let currentTime = new Date(`${dateBase}T${dayTiming.open}`);
+  const closeTime = new Date(`${dateBase}T${dayTiming.close}`);
 
   while (currentTime < closeTime) {
     const timeString = currentTime.toTimeString().substring(0, 5); // HH:MM
@@ -91,11 +156,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
     }
 
+    const dbDateStr = formatToYYYYMMDD(date);
+
     // Double check availability (max 2)
     const { count, error: countError } = await supabase
       .from('bookings')
       .select('*', { count: 'exact', head: true })
-      .eq('date', date)
+      .eq('date', dbDateStr)
       .eq('time', time);
 
     if (countError) throw countError;
@@ -107,7 +174,7 @@ export async function POST(request: Request) {
     // Insert booking
     const { error } = await supabase
       .from('bookings')
-      .insert([{ date, time, name, phone, gender, service_id: serviceId }]);
+      .insert([{ date: dbDateStr, time, name, phone, gender, service_id: serviceId }]);
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
