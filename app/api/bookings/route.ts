@@ -144,12 +144,14 @@ export async function GET(request: Request) {
   let currentTime = new Date(`${dateBase}T${dayTiming.open}`);
   const closeTime = new Date(`${dateBase}T${dayTiming.close}`);
 
+  const now = new Date();
+
   while (currentTime < closeTime) {
     const timeString24 = currentTime.toTimeString().substring(0, 5); // HH:MM
     const timeString12 = to12Hour(timeString24);
     // Add slot if bookings at this time are less than 2 (check both formats for compatibility)
     const count = (slotCounts[timeString24] || 0) + (slotCounts[timeString12] || 0);
-    if (count < 2) {
+    if (count < 2 && currentTime > now) {
       slots.push(timeString12);
     }
     currentTime = new Date(currentTime.getTime() + 30 * 60000); // add 30 mins

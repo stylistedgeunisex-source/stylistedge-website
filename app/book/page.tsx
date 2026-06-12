@@ -61,6 +61,11 @@ export default function BookPage() {
       alert("Please fill all required fields.");
       return;
     }
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phoneRegex.test(phone)) {
+      alert("Please enter a valid phone number (10-15 digits).");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -95,6 +100,11 @@ export default function BookPage() {
   const fetchMyBookings = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!managePhone) return;
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phoneRegex.test(managePhone)) {
+      alert("Please enter a valid phone number (10-15 digits).");
+      return;
+    }
     
     setLoading(true);
     try {
@@ -150,7 +160,7 @@ export default function BookPage() {
             className={`font-semibold text-lg ${view === 'manage' ? 'text-black' : 'text-gray-400'}`}
             onClick={() => setView('manage')}
           >
-            Manage Bookings
+            Cancel Booking
           </button>
         </div>
 
@@ -249,7 +259,7 @@ export default function BookPage() {
 
         {view === 'manage' && (
           <div className="space-y-6">
-            <h1 className="text-2xl font-bold mb-6">Manage Your Bookings</h1>
+            <h1 className="text-2xl font-bold mb-6">Cancel Your Booking</h1>
             
             <form onSubmit={fetchMyBookings} className="flex gap-4">
               <input 
@@ -265,7 +275,7 @@ export default function BookPage() {
                 disabled={loading}
                 className="bg-black text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-800 disabled:opacity-50"
               >
-                Find Bookings
+                Find Booking
               </button>
             </form>
 

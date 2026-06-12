@@ -289,14 +289,14 @@ export default function HomePage() {
           {/* Nav links */}
           <div className="hidden md:flex items-center gap-4 text-xs uppercase tracking-wider font-medium">
             <a
-              href="#services"
+              href="/menu"
               className={`transition-all duration-500 rounded-full px-4 py-2 text-xs uppercase tracking-wider font-medium ${
                 scrolled
                   ? 'bg-transparent border-transparent text-primary hover:text-accent shadow-none'
                   : 'bg-white/95 backdrop-blur-sm shadow-sm border border-white/20 text-primary hover:text-accent'
               }`}
             >
-              Services
+              Menu
             </a>
             <a
               href="#signature"
