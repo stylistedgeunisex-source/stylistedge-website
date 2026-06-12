@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ImageUploader from './ImageUploader';
 
 type PriceType = 'fixed' | 'range' | 'gender' | 'custom';
 
@@ -120,6 +121,7 @@ export default function AdminPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
    const [bookings, setBookings] = useState<any[]>([]);
   const [top5, setTop5] = useState<{ phone: string; name: string; count: number }[]>([]);
   const [overrideDate, setOverrideDate] = useState('');
@@ -156,6 +158,11 @@ export default function AdminPage() {
     }
   };
 
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const saveDatabaseToServer = async () => {
     setIsSaving(true);
     try {
@@ -169,10 +176,10 @@ export default function AdminPage() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      alert('Settings saved successfully!');
+      showToast('Settings saved successfully!', 'success');
     } catch (error) {
       console.error('Failed to save', error);
-      alert('Failed to save settings.');
+      showToast('Failed to save settings.', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -634,15 +641,27 @@ const renderPriceInputs = (service: Service) => {
       </div>
 
       <div className="mainPanel">
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        {toast && (
+          <div className={`toast ${toast.type}`}>
+            <span className="toastIcon">{toast.type === 'success' ? '✅' : '❌'}</span>
+            {toast.message}
+          </div>
+        )}
+        <div className="topHeader">
+          <div className="headerTitle">
+            {selectedCategoryId === 'brand' && '🏪 Brand Settings'}
+            {selectedCategoryId === 'timings' && '⏰ Store Timings'}
+            {selectedCategoryId === 'bookings' && '📅 Customer Bookings'}
+            {selectedCategoryId === 'analytics' && '📈 Analytics'}
+            {!['brand', 'timings', 'bookings', 'analytics'].includes(selectedCategoryId || '') && `📁 ${selectedCategory?.title || 'Category'}`}
+          </div>
           <button
-            className="primaryButton"
-            style={{ backgroundColor: isSaving ? '#9ca3af' : '#10b981', minWidth: '150px' }}
+            className="saveButton"
             type="button"
             onClick={saveDatabaseToServer}
             disabled={isSaving}
           >
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? '⏳ Saving...' : '💾 Save Changes'}
           </button>
         </div>
 
@@ -650,11 +669,10 @@ const renderPriceInputs = (service: Service) => {
           <div className="sectionBlock">
             <div className="sectionHeader">Brand</div>
             <div className="fieldRow">
-              <label>Hero Image URL</label>
-              <input
-                type="text"
+              <label>Hero Image</label>
+              <ImageUploader
                 value={database.brand.heroImage || ''}
-                onChange={(event) => updateBrandField('heroImage', event.target.value)}
+                onChange={(url) => updateBrandField('heroImage', url)}
               />
             </div>
             <div className="fieldRow">
@@ -929,11 +947,10 @@ const renderPriceInputs = (service: Service) => {
                 />
               </div>
               <div className="fieldRow">
-                <label>Image</label>
-                <input
-                  type="text"
+                <label>Category Image</label>
+                <ImageUploader
                   value={selectedCategory.image}
-                  onChange={(event) => updateCategoryField('image', event.target.value)}
+                  onChange={(url) => updateCategoryField('image', url)}
                 />
               </div>
               <div className="fieldRow checkboxRow">
@@ -1017,58 +1034,72 @@ const renderPriceInputs = (service: Service) => {
       <a ref={downloadLinkRef} style={{ display: 'none' }} />
 
       <style jsx>{`
+        :global(body) {
+          margin: 0;
+          padding: 0;
+          background-color: #f8fafc;
+        }
+
         .adminShell {
           display: flex;
           min-height: 100vh;
-          font-family: Arial, sans-serif;
-          background: #f4f5f7;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          background: #f8fafc;
+          color: #0f172a;
         }
 
         .sidebar {
           width: 280px;
-          background: #1e1e1e;
-          color: #ffffff;
-          padding: 18px;
+          background: #ffffff;
+          border-right: 1px solid #e2e8f0;
+          padding: 24px 20px;
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 16px;
           overflow-y: auto;
+          box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+          z-index: 10;
         }
 
         .sidebar .sectionHeader {
-          color: #ffffff;
-        }
-
-        .sectionHeader {
-          font-size: 1rem;
-          font-weight: 700;
-          color: #000000;
-          margin-bottom: 10px;
+          color: #64748b;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-top: 12px;
+          margin-bottom: 4px;
         }
 
         .categoryList {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 6px;
         }
 
         .categoryItem {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 10px 12px;
-          border-radius: 8px;
-          background: #2a2a2a;
+          padding: 12px 14px;
+          border-radius: 12px;
+          background: transparent;
           cursor: pointer;
-          transition: background 0.2s ease;
+          transition: all 0.2s ease;
+          border: 1px solid transparent;
+          color: #475569;
+          font-weight: 500;
         }
 
         .categoryItem:hover {
-          background: #333333;
+          background: #f1f5f9;
+          color: #0f172a;
         }
 
         .categoryItem.selected {
-          background: #444bff;
+          background: #eff6ff;
+          color: #2563eb;
+          border-color: #bfdbfe;
+          box-shadow: 0 2px 4px rgba(37, 99, 235, 0.05);
         }
 
         .categoryLabel {
@@ -1079,48 +1110,83 @@ const renderPriceInputs = (service: Service) => {
         }
 
         .categoryControls button {
-          margin-left: 6px;
+          margin-left: 4px;
           min-width: 28px;
           padding: 6px;
           border: none;
-          border-radius: 4px;
-          background: #f4f5f7;
-          color: #1e1e1e;
+          border-radius: 6px;
+          background: #e2e8f0;
+          color: #475569;
           cursor: pointer;
+          transition: all 0.15s;
+        }
+        
+        .categoryControls button:hover {
+          background: #cbd5e1;
+          color: #0f172a;
         }
 
         .mainPanel {
           flex: 1;
-          padding: 24px;
+          padding: 32px 48px;
           display: flex;
           flex-direction: column;
-          gap: 18px;
+          gap: 24px;
           overflow-y: auto;
+          position: relative;
+        }
+
+        .topHeader {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 16px;
+          border-bottom: 1px solid #e2e8f0;
+          margin-bottom: 8px;
+        }
+        
+        .headerTitle {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #0f172a;
+          display: flex;
+          align-items: center;
+          gap: 12px;
         }
 
         .sectionBlock {
           background: #ffffff;
-          border: 1px solid #d9d9d9;
-          border-radius: 12px;
-          padding: 18px;
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 24px 32px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+          transition: box-shadow 0.3s ease;
+        }
+        
+        .sectionBlock:hover {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+
+        .sectionHeader {
+          font-size: 1.15rem;
+          font-weight: 600;
+          color: #0f172a;
+          margin-bottom: 20px;
+          border-bottom: 2px solid #f1f5f9;
+          padding-bottom: 10px;
         }
 
         .fieldRow {
           display: flex;
           flex-direction: column;
-          gap: 6px;
-          margin-bottom: 12px;
-        }
-
-        .fieldRow,
-        .priceBlock label,
-        .serviceBlock label {
-          color: #000000;
+          gap: 8px;
+          margin-bottom: 20px;
         }
 
         .fieldRow label {
           font-size: 0.90rem;
           font-weight: 600;
+          color: #334155;
         }
 
         .fieldRow input,
@@ -1128,102 +1194,235 @@ const renderPriceInputs = (service: Service) => {
         .priceBlock input,
         .priceBlock select {
           width: 100%;
-          min-height: 36px;
-          padding: 8px 10px;
-          border-radius: 8px;
-          border: 1px solid #c4c4c4;
+          min-height: 44px;
+          padding: 10px 14px;
+          border-radius: 10px;
+          border: 1px solid #cbd5e1;
           font-size: 0.95rem;
           background: #ffffff;
-          color: #111111;
+          color: #0f172a;
+          transition: all 0.2s;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.02) inset;
         }
-
-        .fieldRow input::placeholder,
-        .fieldRow select::placeholder,
-        .priceBlock input::placeholder,
-        .priceBlock select::placeholder {
-          color: #858585;
-        }
-
-        .priceBlock label,
-        .serviceBlock label,
-        .fieldRow label {
-          color: #000000;
+        
+        .fieldRow input:focus,
+        .fieldRow select:focus,
+        .priceBlock input:focus,
+        .priceBlock select:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
         .checkboxRow {
           flex-direction: row;
           align-items: center;
+          padding: 8px 0;
         }
 
         .checkboxRow label {
           font-weight: 500;
           display: inline-flex;
           align-items: center;
-          gap: 8px;
+          gap: 10px;
+          cursor: pointer;
+        }
+        
+        .checkboxRow input[type="checkbox"] {
+          width: 20px;
+          height: 20px;
+          accent-color: #2563eb;
+          cursor: pointer;
         }
 
         .buttonGroup {
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          gap: 10px;
-          margin-top: 10px;
+          gap: 12px;
+          margin-top: 16px;
         }
 
         .buttonGroup button,
         .primaryButton {
           border: none;
-          border-radius: 8px;
-          padding: 10px 14px;
-          background: #1e1e1e;
-          color: #ffffff;
+          border-radius: 10px;
+          padding: 12px 20px;
+          background: #f1f5f9;
+          color: #334155;
+          font-weight: 600;
           cursor: pointer;
-          transition: background 0.2s ease;
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
         }
 
-        .buttonGroup button:hover,
-        .primaryButton:hover {
-          background: #333333;
+        .buttonGroup button:hover {
+          background: #e2e8f0;
+          color: #0f172a;
         }
 
         .primaryButton {
-          width: fit-content;
+          background: #1e293b;
+          color: #ffffff;
+          box-shadow: 0 4px 6px rgba(30, 41, 59, 0.2);
+        }
+        
+        .primaryButton:hover {
+          background: #0f172a;
+          box-shadow: 0 6px 12px rgba(30, 41, 59, 0.3);
+          transform: translateY(-1px);
+        }
+
+        .saveButton {
+          background: #10b981;
+          color: #ffffff;
+          border: none;
+          border-radius: 10px;
+          padding: 12px 24px;
+          font-weight: 600;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+        }
+        
+        .saveButton:hover:not(:disabled) {
+          background: #059669;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 14px rgba(16, 185, 129, 0.3);
+        }
+        
+        .saveButton:disabled {
+          background: #94a3b8;
+          cursor: not-allowed;
+          box-shadow: none;
+          transform: none;
         }
 
         .servicesList {
           display: flex;
           flex-direction: column;
-          gap: 16px;
-          margin-bottom: 14px;
+          gap: 20px;
+          margin-bottom: 24px;
         }
 
         .serviceBlock {
-          border: 1px solid #e1e1e1;
-          border-radius: 10px;
-          padding: 14px;
-          background: #fafafa;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 20px;
+          background: #f8fafc;
+          transition: border-color 0.2s;
+        }
+        
+        .serviceBlock:hover {
+          border-color: #cbd5e1;
         }
 
         .priceBlock {
           display: grid;
-          gap: 10px;
-          margin-bottom: 10px;
+          gap: 16px;
+          margin-bottom: 12px;
+          background: #ffffff;
+          padding: 16px;
+          border-radius: 8px;
+          border: 1px dashed #cbd5e1;
         }
 
         .emptyState {
-          color: #666666;
-          padding: 18px;
-          border: 1px dashed #cccccc;
-          border-radius: 10px;
+          color: #64748b;
+          padding: 32px;
+          text-align: center;
+          background: #f1f5f9;
+          border: 2px dashed #cbd5e1;
+          border-radius: 16px;
+          font-weight: 500;
         }
+        
+        .toast {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          padding: 16px 24px;
+          border-radius: 12px;
+          background: #ffffff;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-weight: 600;
+          font-size: 0.95rem;
+          z-index: 1000;
+          animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .toast.success {
+          border-left: 4px solid #10b981;
+          color: #064e3b;
+        }
+        
+        .toast.error {
+          border-left: 4px solid #ef4444;
+          color: #7f1d1d;
+        }
+        
+        .toastIcon {
+          font-size: 1.2rem;
+        }
+        
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        table {
+          width: 100%;
+          border-collapse: separate;
+          border-spacing: 0;
+        }
+        
+        th {
+          background: #f1f5f9;
+          padding: 12px 16px;
+          font-weight: 600;
+          color: #475569;
+          text-align: left;
+          font-size: 0.9rem;
+          border-bottom: 1px solid #cbd5e1;
+        }
+        
+        th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        th:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+        
+        td {
+          padding: 16px;
+          border-bottom: 1px solid #e2e8f0;
+          color: #0f172a;
+          font-size: 0.95rem;
+        }
+        
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
 
         @media (max-width: 960px) {
           .adminShell {
             flex-direction: column;
           }
-
           .sidebar {
             width: 100%;
+            border-right: none;
+            border-bottom: 1px solid #e2e8f0;
+          }
+          .mainPanel {
+            padding: 20px;
           }
         }
       `}</style>
