@@ -122,22 +122,44 @@ export default function AdminPage() {
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-   const [bookings, setBookings] = useState<any[]>([]);
+  const [upcomingBookings, setUpcomingBookings] = useState<any[]>([]);
+  const [pastBookings, setPastBookings] = useState<any[]>([]);
   const [top5, setTop5] = useState<{ phone: string; name: string; count: number }[]>([]);
   const [overrideDate, setOverrideDate] = useState('');
   const [overrideIsOpen, setOverrideIsOpen] = useState(true);
   const [overrideOpen, setOverrideOpen] = useState('09:00');
   const [overrideClose, setOverrideClose] = useState('17:00');
 
+  const fetchBookings = () => {
+    fetch('/api/admin/bookings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setUpcomingBookings(data.upcomingBookings || []);
+          setPastBookings(data.pastBookings || []);
+        }
+      });
+  };
+
+  const deleteBooking = async (id: string, phone: string) => {
+    if (!confirm('Are you sure you want to delete this booking?')) return;
+    try {
+      const res = await fetch(`/api/bookings?id=${id}&phone=${phone}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Booking deleted successfully', 'success');
+        fetchBookings();
+      } else {
+        showToast('Failed to delete booking', 'error');
+      }
+    } catch (err) {
+      showToast('Error deleting booking', 'error');
+    }
+  };
+
   useEffect(() => {
     if (selectedCategoryId === 'bookings') {
-      fetch('/api/admin/bookings')
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            setBookings(data.bookings);
-          }
-        });
+      fetchBookings();
     }
     if (selectedCategoryId === 'analytics') {
       fetch('/api/admin/analytics')
@@ -870,8 +892,45 @@ const renderPriceInputs = (service: Service) => {
 
         {selectedCategoryId === 'bookings' && (
           <div className="sectionBlock">
-            <div className="sectionHeader">Customer Bookings</div>
-            {bookings.length > 0 ? (
+            <div className="sectionHeader" style={{ color: 'black' }}>Upcoming Bookings</div>
+            {upcomingBookings.length > 0 ? (
+              <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', color: 'black', marginBottom: '30px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #eee' }}>
+                    <th style={{ padding: '8px' }}>Date</th>
+                    <th style={{ padding: '8px' }}>Time</th>
+                    <th style={{ padding: '8px' }}>Name</th>
+                    <th style={{ padding: '8px' }}>Phone</th>
+                    <th style={{ padding: '8px' }}>Gender</th>
+                    <th style={{ padding: '8px' }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {upcomingBookings.map(booking => (
+                    <tr key={booking.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                      <td style={{ padding: '8px' }}>{booking.date}</td>
+                      <td style={{ padding: '8px' }}>{booking.time}</td>
+                      <td style={{ padding: '8px' }}>{booking.name}</td>
+                      <td style={{ padding: '8px' }}>{booking.phone}</td>
+                      <td style={{ padding: '8px', textTransform: 'capitalize' }}>{booking.gender}</td>
+                      <td style={{ padding: '8px' }}>
+                        <button 
+                          onClick={() => deleteBooking(booking.id, booking.phone)}
+                          style={{ background: '#ef4444', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="emptyState" style={{ color: 'black', marginBottom: '30px' }}>No upcoming bookings found.</div>
+            )}
+
+            <div className="sectionHeader" style={{ color: 'black' }}>Past Bookings</div>
+            {pastBookings.length > 0 ? (
               <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', color: 'black' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #eee' }}>
@@ -880,22 +939,31 @@ const renderPriceInputs = (service: Service) => {
                     <th style={{ padding: '8px' }}>Name</th>
                     <th style={{ padding: '8px' }}>Phone</th>
                     <th style={{ padding: '8px' }}>Gender</th>
+                    <th style={{ padding: '8px' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bookings.map(booking => (
-                    <tr key={booking.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                  {pastBookings.map(booking => (
+                    <tr key={booking.id} style={{ borderBottom: '1px solid #f9f9f9', opacity: 0.7 }}>
                       <td style={{ padding: '8px' }}>{booking.date}</td>
                       <td style={{ padding: '8px' }}>{booking.time}</td>
                       <td style={{ padding: '8px' }}>{booking.name}</td>
                       <td style={{ padding: '8px' }}>{booking.phone}</td>
                       <td style={{ padding: '8px', textTransform: 'capitalize' }}>{booking.gender}</td>
+                      <td style={{ padding: '8px' }}>
+                        <button 
+                          onClick={() => deleteBooking(booking.id, booking.phone)}
+                          style={{ background: '#ef4444', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
+                        >
+                          Remove
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             ) : (
-              <div className="emptyState" style={{ color: 'black' }}>No bookings found.</div>
+              <div className="emptyState" style={{ color: 'black' }}>No past bookings found.</div>
             )}
           </div>
         )}

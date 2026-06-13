@@ -18,22 +18,19 @@ export async function GET(request: Request) {
 
     await jwtVerify(token, JWT_SECRET);
 
-    const todayStr = new Date().toLocaleDateString('en-CA', {
-      timeZone: 'Asia/Kolkata'
-    });
+    const now = new Date();
+    const istTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const todayStr = istTime.toLocaleDateString('en-CA');
+    const currentMinutes = istTime.getHours() * 60 + istTime.getMinutes();
     
     const { data: bookings, error } = await supabase
       .from('bookings')
-      .select('*')
-      .gte('date', todayStr)
-      .order('date', { ascending: true })
-      .order('time', { ascending: true });
+      .select('*');
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 
-    // Filter out past times for today's bookings
     const timeToMinutes = (timeStr: string) => {
       const [time, modifier] = timeStr.split(' ');
       let [hours, minutes] = time.split(':').map(Number);
@@ -42,16 +39,35 @@ export async function GET(request: Request) {
       return hours * 60 + minutes;
     };
 
-    const now = new Date();
-    const istTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-    const currentMinutes = istTime.getHours() * 60 + istTime.getMinutes();
+    const upcomingBookings: any[] = [];
+    const pastBookings: any[] = [];
 
-    const upcomingBookings = bookings.filter(b => {
-      if (b.date === todayStr) {
-        return timeToMinutes(b.time) > currentMinutes;
+    bookings.forEach(b => {
+      let isUpcoming = false;
+      if (b.date > todayStr) {
+        isUpcoming = true;
+      } else if (b.date === todayStr) {
+        isUpcoming = timeToMinutes(b.time) > currentMinutes;
       }
-      return true;
+
+      if (isUpcoming) {
+        upcomingBookings.push(b);
+      } else {
+        pastBookings.push(b);
+      }
     });
+
+    const sortBookings = (arr: any[], ascending: boolean) => {
+      return arr.sort((a, b) => {
+        const dateDiff = a.date.localeCompare(b.date);
+        if (dateDiff !== 0) return ascending ? dateDiff : -dateDiff;
+        const timeDiff = timeToMinutes(a.time) - timeToMinutes(b.time);
+        return ascending ? timeDiff : -timeDiff;
+      });
+    };
+
+    const sortedUpcoming = sortBookings(upcomingBookings, true);
+    const sortedPast = sortBookings(pastBookings, false);
 
     // Helper to convert YYYY-MM-DD to DD/MM/YYYY
     const formatToDDMMYYYY = (dateStr: string): string => {
@@ -64,12 +80,16 @@ export async function GET(request: Request) {
       return dateStr;
     };
 
-    const formattedBookings = upcomingBookings.map(b => ({
+    const formatBookings = (arr: any[]) => arr.map(b => ({
       ...b,
       date: formatToDDMMYYYY(b.date)
     }));
 
-    return NextResponse.json({ success: true, bookings: formattedBookings });
+    return NextResponse.json({ 
+      success: true, 
+      upcomingBookings: formatBookings(sortedUpcoming),
+      pastBookings: formatBookings(sortedPast)
+    });
 
   } catch (err: any) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
